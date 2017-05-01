@@ -1,3 +1,46 @@
+; Property-getters for common properties of all objects
+(define get-position
+  (property-getter object:position object?))
+
+(define get-mass
+  (property-getter object:mass object?))
+
+(define get-velocity
+  (property-getter object:velocity object?))
+
+(define get-influences
+  (property-getter object:influences object?))
+
+; Property-setters for common properties of all objects
+; Used to update objects
+
+(define set-velocity!
+  (property-setter object:velocity object? any-object?))
+
+(define set-position!
+  (property-setter object:position object? any-object?))
+
+(define ball?
+  (make-type 'ball (list ball:position)))
+
+(set-predicate<=! ball? object?)
+
+(define make-ball
+  (type-instantiator ball?))
+
+; Property-getters for special properties of ball
+(define get-radius
+  (property-getter ball:radius ball?))
+
+
+
+
+
+
+;;;; TO BE CONTINUED;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 ;;; Object types for Adventure game
 
 (define thing:location

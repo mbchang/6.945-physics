@@ -26,25 +26,61 @@
 (define (get-clock) the-clock)
 
 (define (create-all-objects)
-  (add-object (create-ball 10 (vector 30 30) (vector 1 1) '1) all-objects)
-  (add-object (create-ball 10 (vector 70 70) (vector -1 -1) '1) all-objects)
+  (add-object (create-ball 10 1 (vector 30 30) (vector 1 1) '1 '()) all-objects)
+  (add-object (create-ball 10 1 (vector 70 70) (vector -1 -1) '2 '()) all-objects)
   all-objects
 )
 
 (define (add-object object-maker object-list)
   (set! object-list (cons (object-maker) object-list))) ; prepend the result of object-maker into all-objects
 
-(define (create-ball radius position velocity name)
+(define (create-ball radius position velocity name influences)
   (make-thing 'radius radius
+			  'mass mass  ; unit: kg
               'position position
               'velocity velocity
-              'name name)
+              'name name
+			  'influences influences)
 )
 
+; TODO: Currently net-force is always gravitational. Later expand to more types of forces and corresponding object update method.
+; TODO: If we are to include a varying force (as a function of time), acceleration will need to integrate over time instead of simple sum/multiplication
+(define (update object net-force)
+	(let ((m (get-mass object))
+		  (accel (/ net-force m))
+		  (v (get-velocity object))
+		  (dv (* accel tickrate)))
+		(set-velocity! object (+ v dv))
+		(let ((x (get-position object))
+			  (newv (get-velocity object))
+		 	  (dx (* newv tickrate)))
+			(set-position! object (+ x dx)))) 
+)
+
+; TODO: Currently "influence" is always gravitational force. In the future, when we have multiple types of "influences," also need to specify/check which forces to apply. Potentially through different object types/object hierarchy (ex. all object? type has gravity, spring? has spring forces, etc.)
+; TODO: If we are to include a varying force (as a function of time), will need to change to returning force as a function instead of a numeric value
+(define (create-target-interactions obj)
+	(let ((all-influences (get-influences obj)) ; list of interaction objects is a property
+		  (net-force 0))
+		(for-each
+			(lambda (infl)
+				(let ((m1 (get-mass obj))
+					  (m2 (get-mass infl))
+					  (g 6.674×(expt 10 −11)) ; unit m3⋅kg−1⋅s−2
+					  (r (abs (- (get-location obj) (get-location infl)))))
+					(set! net-force (+ net-force (/ (* g m1 m2) (expt r 2))))))
+			all-influences)
+	(update obj net-force)))
+
+; Calls on create-target-interactions for each object
+; which calculates the net force and makes each object update itself
 (define (create-all-interactions)
-
+	(let ((all-objects get-all-objects))
+		(for-each
+			(lambda (obj)
+				(create-target-interactions obj))
+			all-objects))		
 )
-
 
 
 ;;;; TO BE CONTINUED;;;;;
