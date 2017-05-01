@@ -1,122 +1,58 @@
 ;;;; physics
 
+;;; Set up
+
 (define the-clock)
 (define all-objects)
+(define all-interactions)
+(define world)
 
-(define (start-adventure my-name)
-  (set! the-clock (make-clock))
-  (set! all-places (create-mit))
-  (set! heaven (create-place 'heaven))
-  (set! all-people (create-people all-places))
-  (set! my-avatar
-        (create-avatar my-name (random-choice all-places)))
-  (whats-here))
+; global constants
+(define tickrate 0.001)
+(define world-width 100)  ; width in pixels
+(define world-height 100) ; height in pixels
+(define max-velocity 10)
 
-(define (get-all-places)
-  all-places)
+(define (start-physics-engine)
+  (set! the-clock (make-clock)) ; sets the global tick rate
+  (set! world (create-world))
+  (create-all-objects) ; creates all objects
+  (set! all-interactions (create-all-interactions)) ; creates all interactions
+  (debugging-info)  ; prints state of the world
+)
 
-(define (get-heaven)
-  heaven)
+(define (get-all-objects) all-objects)
+(define (get-all-interactions) all-interactions)
+(define (get-clock) the-clock)
 
-(define (get-clock)
-  the-clock)
-
-;;; User interface
+(define (create-all-objects)
+  (add-object (create-ball 10 (vector 30 30) (vector 1 1) '1) all-objects)
+  (add-object (create-ball 10 (vector 70 70) (vector -1 -1) '1) all-objects)
+  all-objects
+)
 
-(define (go direction)
-  (let ((exit
-         (find-exit-in-direction direction
-                                 (get-location my-avatar))))
-    (if exit
-        (take-exit! exit my-avatar)
-        (narrate! (list "No exit in" direction "direction")
-                  my-avatar)))
-  unspecific)
+(define (add-object object-maker object-list)
+  (set! object-list (cons (object-maker) object-list))) ; prepend the result of object-maker into all-objects
 
-(define (take-thing name)
-  (let ((thing (find-thing name (here))))
-    (if thing
-        (take-thing! thing my-avatar)))
-  unspecific)
+(define (create-ball radius position velocity name)
+  (make-thing 'radius radius
+              'position position
+              'velocity velocity
+              'name name)
+)
 
-(define (drop-thing name)
-  (let ((thing (find-thing name my-avatar)))
-    (if thing
-        (drop-thing! thing my-avatar)))
-  unspecific)
+(define (create-all-interactions)
 
-(define (look-in-bag #!optional person-name)
-  (let ((person
-         (if (default-object? person-name)
-             my-avatar
-             (find-person person-name))))
-    (if person
-        (tell! (let ((referent (local-possessive person))
-                     (things (get-things person)))
-                 (if (n:pair? things)
-                     (cons* referent "bag contains" things)
-                     (list referent "bag is empty")))
-               my-avatar)))
-  unspecific)
+)
 
-(define (whats-here)
-  (look-around my-avatar)
-  unspecific)
 
-(define (say . message)
-  (say! my-avatar message)
-  unspecific)
 
-(define (tell person-name . message)
-  (tell! message (find-person person-name))
-  unspecific)
+;;;; TO BE CONTINUED;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define (hang-out ticks)
-  (do ((i 0 (n:+ i 1)))
-      ((not (n:< i ticks)))
-    (tick! (get-clock)))
-  unspecific)
-
-;;; Support for UI
 
-(define (here)
-  (get-location my-avatar))
 
-(define (find-person name)
-  (let ((person
-         (find-object-by-name name (people-here my-avatar))))
-    (if (not person)
-        (tell! (list "There is no one called" name "here")
-               my-avatar))
-    person))
 
-(define (find-thing name person-or-place)
-  (let ((thing
-         (find-object-by-name
-          name
-          (person-or-place-things person-or-place))))
-    (if (not thing)
-        (tell! (cons* "There is nothing called"
-                      name
-                      (person-or-place-name person-or-place))
-               my-avatar))
-    thing))
-
-(define (person-or-place-things person-or-place)
-  (if (place? person-or-place)
-      (all-things-in-place person-or-place)
-      (get-things person-or-place)))
-
-(define (person-or-place-name person-or-place)
-  (if (place? person-or-place)
-      '("here")
-      (list "in" (local-possessive person-or-place) "bag")))
-
-(define (local-possessive person)
-  (if (eqv? person my-avatar)
-      "Your"
-      (possessive person)))
-
 (define (create-mit)
   (let ((great-dome (create-place 'great-dome))
         (little-dome (create-place 'little-dome))
