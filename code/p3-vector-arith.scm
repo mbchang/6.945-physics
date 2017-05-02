@@ -65,6 +65,7 @@
                   ((-) (vector-element-wise (get-op-from-arith '- base-arithmetic)))
                   ;((*) (dot-product-maker (get-op-from-arith '+ base-arithmetic) (get-op-from-arith '* base-arithmetic)))
                   ((*) (vector-scalar-multiplication (get-op-from-arith '+ base-arithmetic) (get-op-from-arith '* base-arithmetic)))
+                  ((/) (vector-scalar-division (get-op-from-arith '/ base-arithmetic)))
                   ((negate) (vector-element-wise (get-op-from-arith 'negate base-arithmetic)))
                   ((magnitude) (vector-magnitude-maker (get-op-from-arith '+ base-arithmetic) (get-op-from-arith '* base-arithmetic) (get-op-from-arith 'sqrt base-arithmetic)))
                   (else
@@ -113,9 +114,21 @@
             ((and (vector? a) (vector? b)) ((vector-element-wise +) a b))
             ((vector? a) ((vector-element-wise +) (coerce a b) (coerce b a))) ;(vector-map (lambda (x) (* x b)) a))
             ((vector? b) ((vector-element-wise +) (coerce a b) (coerce b a))) ;(vector-map (lambda (x) (* x a)) b))
-            (else (lambda args (error "unknown arguments for vector-scalar-multiplication")))
+            (else (lambda args (error "unknown arguments for vector-scalar-plus")))
       ))
 )
+
+
+(define (vector-scalar-division /)
+  (lambda (a b)
+      (cond ((and (not (vector? a)) (not (vector? b))) (/ a b))
+            ((and (vector? a) (vector? b)) ((vector-element-wise /) a b))
+            ((vector? a) ((vector-element-wise /) (coerce a b) (coerce b a))) ;(vector-map (lambda (x) (* x b)) a))
+            ((vector? b) ((vector-element-wise /) (coerce a b) (coerce b a))) ;(vector-map (lambda (x) (* x a)) b))
+            (else (lambda args (error "unknown arguments for vector-scalar-division")))
+      ))
+)
+
 
 
 (define combined-arithmetic
