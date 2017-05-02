@@ -13,63 +13,34 @@
 	    "package"                   ;from common
 	    "predicate-counter"         ;from common
             "trie"                      ;from common
+
+
+            ;;;COMMENT THIS OUT and run temp
      ;       "generics"
-            ;"tagging"
+     ;       "tagging"
 	    ;"predicates1"
      ;       "templates"
      ;       "values"
      ;       "tags"
      ;       "functions"
 
-
-
-
-	    ;"operations"                
-	    ;"arith"			;from common
-	    ;"numeric-arith"		;from common
-     ;       ;"vector-extender"
+	    ;"operations"    
+     ;               "arith"             ;from common
+     ;     "numeric-arith"           ;from common            
+     ;       "vector-extender"
      ;       "generic-arith"             ;from generic-arithmetic
 	    ;"standard-arith"            
 
-
-            ;"p3-utils"                     ;from common
-          ;"p3-collections"               ;from common
-            ;"p3-memoizers"                 ;from common
-          ;"p3-predicates"                ;from common
+          ;;;COMMENT THIS OUT and run project_run
           "p3-predicate-metadata"        ;from common
-          ;"p3-applicability"             ;from common
-            ;"p3-generic-procedures"        ;from common
-          ;"p3-operators"                 ;from common
           "p3-operations"                ;from common
-          ;"p3-package"                   ;from common
-          ;"p3-predicate-counter"         ;from common
-            ;"p3-trie"                      ;from common
-
           "arith"             ;from common
           "numeric-arith"           ;from common
-            
-          ;"p3-arith"             ;from common
-          ;"p3-numeric-arith"           ;from common
-
-
           "p3-standard-arith"            ;from arithmetic-combinators
           "p3-function-variants"         ;from arithmetic-combinators
             "p3-generic-arith"             ;from generic-arithmetic
             "p3-generics"                  ;from generic-arithmetic
-
-
-
-          ;"p3-generics"
-          ;"p3-operations"
-          ;"arith"
-          ;"numeric-arith"
-          ;"generic-arith"
-          ;"p3-standard-arith"      ; problem
           "p3-vector-arith"        ; problem
-
-
-
-
 
 
 
