@@ -20,10 +20,11 @@
 	    "operations"                
 	    "arith"			;from common
 	    "numeric-arith"		;from common
+            "vector-extender"
             "generic-arith"             ;from generic-arithmetic
 	    "standard-arith"            
-            "adventure-substrate"
-            "adventure-objects"
-            "physics-world"
+            "physics-substrate"
+            ; "physics-objects"
+            ; "physics-world"
 	    ))
 
