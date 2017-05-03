@@ -1,3 +1,5 @@
+(ge (make-top-level-environment))
+
 (load "load")
 
 (define (reset-repl)
@@ -5,9 +7,8 @@
 
 ;(install-arithmetic! (extend-arithmetic vector-extender numeric-arithmetic))
 
-;; TODO TODO TODO we should really change the arithmetic
 (define (sum values)
-  (reduce-left + #(0 0) values))
+  (reduce-left + 0 values))
 
 ;;; object type (parent type of everything)
 
@@ -36,7 +37,7 @@
   (make-property 'position))
 (define thing:velocity
   (make-property 'velocity
-                 'default-value #(0 0))) ; TODO: make general for dimensions
+                 'default-value 0)) 
 
 (define thing?
   (make-type 'thing (list thing:interactions
