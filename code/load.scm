@@ -1,24 +1,4 @@
-;(set! user-initial-environment (make-top-level-environment))
-;(environment-define user-initial-environment 
-;                    'generic-evaluation-environment
-;                    (extend-top-level-environment user-initial-environment))
-;(define generic-evaluation-environment 
-;  (access generic-evaluation-environment user-initial-environment))
-
 (define arith-environment (make-top-level-environment))
-
-;(load (list 
-;          "p3-predicate-metadata"        ;from common
-;          "p3-operations"                ;from common
-;          "arith"             ;from common
-;          "numeric-arith"           ;from common
-;          "p3-standard-arith"            ;from arithmetic-combinators
-;          "p3-function-variants"         ;from arithmetic-combinators
-;            "p3-generic-arith"             ;from generic-arithmetic
-;            "p3-generics"                  ;from generic-arithmetic
-;          "p3-vector-arith"        ; problem
-;) 
-;arith-environment)
 
 (load "load-arith" arith-environment)
 (define * (access * arith-environment))
@@ -76,57 +56,6 @@
 (define symbol? (access symbol? arith-environment))
 (define vector? (access vector? arith-environment))
 
-
-
-
-;(load (list 
-;            "utils"                     ;from common
-;            "indexes"                   ;from common
-;          "collections"               ;from common
-;            "memoizers"                 ;from common
-;            "predicates"                ;from common
-;          "applicability"             ;from common
-;            "generic-procedures"        ;from common
-;            "pretty-printer"            ;from common
-;          "operators"                 ;from common
-;          "package"                   ;from common
-;          "predicate-counter"         ;from common
-;            "trie"                      ;from common
-
-
-;          ;"p3-predicate-metadata"        ;from common
-;          ;"p3-operations"                ;from common
-;          ;"arith"             ;from common
-;          ;"numeric-arith"           ;from common
-;          ;"p3-standard-arith"            ;from arithmetic-combinators
-;          ;"p3-function-variants"         ;from arithmetic-combinators
-;          ;  "p3-generic-arith"             ;from generic-arithmetic
-;          ;  "p3-generics"                  ;from generic-arithmetic
-;          ;"p3-vector-arith"        ; problem
-
-
-;          )
-
-;user-initial-environment
-;)
-
-
-;(load (list 
-;            "generics"
-;            "tagging"
-;          "predicates1"
-;            "templates"
-;            "values"
-;            "tags"
-;            "functions"
-;          "operations"  
-
-;          "physics-substrate"
-;	    )
-
-;generic-evaluation-environment 
-;)
-
 (load (list 
             "utils"                     ;from common
             "indexes"                   ;from common
@@ -141,8 +70,6 @@
           "predicate-counter"         ;from common
             "trie"                      ;from common
 
-
-            ;;;COMMENT THIS OUT and run temp
             "generics"
             "tagging"
           "predicates1"
@@ -151,35 +78,8 @@
             "tags"
             "functions"
           "operations"    
-                    ;"arith"             ;from common
-          ;"numeric-arith"           ;from common            
-            ;"vector-extender"
-          ;  "generic-arith"             ;from generic-arithmetic
-          ;"standard-arith"            
-
-          ;;;COMMENT THIS OUT and run project_run
-          ;"p3-predicate-metadata"        ;from common
-          ;"p3-operations"                ;from common
-          ;"arith"             ;from common
-          ;"numeric-arith"           ;from common
-          ;"p3-standard-arith"            ;from arithmetic-combinators
-          ;"p3-function-variants"         ;from arithmetic-combinators
-          ;  "p3-generic-arith"             ;from generic-arithmetic
-          ;  "p3-generics"                  ;from generic-arithmetic
-          ;"p3-vector-arith"        ; problem
-
-
-
-
             "physics-substrate"
             ; "physics-objects"
             ; "physics-world"
           )
-
-;user-initial-environment
 )
-
-
-
-;(ge generic-evaluation-environment)
-

@@ -161,7 +161,7 @@
                       (G 6.674e-11)
                       (r (magnitude (- (get-position thing)
                                        (get-position influence))))
-                      ; get the unit vector 
+                      ; get the unit vector  TODO TODO
 
                     )
                   (* (* G m1 m2)
@@ -182,7 +182,7 @@
                  'default-value '()))
 (define world:timestep
   (make-property 'timestep
-                 'default-value 0.01))
+                 'default-value 1))
 
 (define world?
   (make-type 'world (list world:all-things
@@ -208,8 +208,8 @@
 
 
 (define w (make-world "world"))
-(define b1 (make-ball "ball1" 10 10 #(0 0)))
-(define b2 (make-ball "ball2" 10 10 #(10 10)))
+(define b1 (make-ball "ball1" 10 1000000000000 #(0 0)))
+(define b2 (make-ball "ball2" 10 1000000000000 #(10 10)))
 (add-ball! b1 w)
 (add-ball! b2 w)
 ;(eq? b (car (get-world-all-things w)))
