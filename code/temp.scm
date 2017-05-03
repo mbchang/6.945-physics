@@ -197,11 +197,11 @@
               (update-thing thing (get-world-timestep world)))
             (get-world-all-things world)))
 
-#|
+;#|
 (define w (make-world "world"))
 (define b (make-ball "ball1" 10 10 #(0 0)))
 (add-ball! b w)
 (eq? b (car (get-world-all-things w)))
 (get-position b)
 (update-world w)
-|#
+;|#

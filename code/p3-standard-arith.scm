@@ -3,7 +3,7 @@
 (define (symbolic? object)
   (or (symbol? object)
       (pair? object)))
-(register-predicate! symbolic? 'symbolic)
+(p3-register-predicate! symbolic? 'symbolic)
 
 (define (symbolic-extender base-arithmetic)
   (make-arithmetic 'symbolic symbolic? (list base-arithmetic)
@@ -12,29 +12,16 @@
     (let ((base-predicate
            (arithmetic-domain-predicate base-arithmetic)))
       (lambda (operator base-operation)
-        (make-operation operator
+        (p3-make-operation operator
                         (any-arg (operator-arity operator)
                                  symbolic?
                                  base-predicate)
                         (lambda args (cons operator args)))))))
 
-;(define (symbolic-extender base-arithmetic)
-;  (make-arithmetic 'symbolic symbolic? (list base-arithmetic)
-;    (lambda (name base-constant)
-;      (default-object))
-;    (let ((base-predicate
-;           (arithmetic-domain-predicate base-arithmetic)))
-;      (lambda (operator base-operation)
-;        (make-operation operator
-;                        (any-arg (operator-arity operator)
-;                                 symbolic?
-;                                 base-predicate)
-;                        (lambda args (cons operator args)))))))
-
 ;;;; Function arithmetic
 
 (define function? procedure?)
-(register-predicate! function? 'function)
+(p3-register-predicate! function? 'function)
 
 (define (function-extender codomain-arithmetic)
   (let ((codomain-predicate
@@ -49,13 +36,13 @@
         ; and here is where the operations get defined
         ; so these operations operate with any-arg
         ; a handler is built with each such operation
-        (make-operation operator
+        (p3-make-operation operator
                         (any-arg (operator-arity operator)
                                  function?
                                  codomain-predicate)
           (lambda things
             (lambda args
-              (apply-operation codomain-operation
+              (p3-apply-operation codomain-operation
                                (map (lambda (thing)
                                       (if (function? thing)
                                           (apply thing args)
@@ -65,15 +52,15 @@
 ;;;; Book examples
 
 (define (make-arithmetic-1 name get-operation)
-  (make-arithmetic name any-object? '()
+  (make-arithmetic name p3-any-object? '()
     (lambda (name)
       (case name
         ((additive-identity) 0)
         ((multiplicative-identity) 1)
         (else (default-object))))
     (lambda (operator)
-      (simple-operation operator
-                        any-object?
+      (p3-simple-operation operator
+                        p3-any-object?
                         (get-operation operator)))))
 
 (define symbolic-arithmetic-1

@@ -1,6 +1,6 @@
 ;;;; Vector arithmetic
 
-(register-predicate! vector? 'vector) ; vector? is already a defined predicate in the scheme language
+(p3-register-predicate! vector? 'vector) ; vector? is already a defined predicate in the scheme language
 
 
 (define (vector-element-wise element-procedure)
@@ -17,36 +17,9 @@
               vecs)
         (error "Vector dimension mismatch:" vecs))))
 
-; Using installed +
-;(define (vector-extender base-arithmetic)
-;  (make-arithmetic 'vector vector? (list base-arithmetic)
-;    (lambda (name base-constant)
-;      (case name
-;        ((additive-identity) #(0))
-;        ((multiplicative-identity) #(1))
-;        (else (base-constant))))
-;    (let ((base-predicate
-;            (arithmetic-domain-predicate base-arithmetic)))
-;      (lambda (operator base-operation)
-;        (let ((procedure
-;                (case operator
-;                  ((+) (vector-element-wise +))
-;                  ((-) (vector-element-wise -))
-;                  ((negate) (vector-element-wise -))
-;                  (else
-;                    (lambda args
-;                      (error "operator undefined in vector"
-;                        operator))))))
-;        (make-operation operator
-;                        (any-arg (operator-arity operator)
-;                                 vector?
-;                                 base-predicate)
-;                        procedure))))))
-
-
 ;; Using base arithmetic
 (define (get-op-from-arith operator arithmetic)
-  (operation-procedure (arithmetic-operation operator arithmetic)))
+  (p3-operation-procedure (arithmetic-operation operator arithmetic)))
 
 (define (vector-extender base-arithmetic)
   (make-arithmetic 'vector vector? (list base-arithmetic)
@@ -70,7 +43,7 @@
                     (lambda args
                       (error "operator undefined in vector"
                         operator))))))
-        (make-operation operator
+        (p3-make-operation operator
                         (any-arg (operator-arity operator)
                                  vector?
                                  base-predicate)

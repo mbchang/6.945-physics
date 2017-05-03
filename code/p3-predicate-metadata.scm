@@ -1,22 +1,22 @@
 ;;;; Simple predicate metadata
 
-(define (register-predicate! predicate name)
+(define (p3-register-predicate! predicate name)
   (set-predicate-metadata! predicate name)
   predicate)
 
-(define (register-compound-predicate! predicate type components)
-  (register-predicate! predicate
+(define (p3-register-compound-predicate! predicate type components)
+  (p3-register-predicate! predicate
                        (cons type
-                             (map predicate-name components))))
+                             (map p3-predicate-name components))))
 
-(define predicate-name get-predicate-metadata)
+(define p3-predicate-name get-predicate-metadata)
 
 
 ;;;(define any-object? (conjoin))
 
-(define (any-object? object) #t)
-(register-predicate! any-object? 'any-object)
+(define (p3-any-object? object) #t)
+(p3-register-predicate! p3-any-object? 'any-object)
 
-(register-predicate! number? 'number)
-(register-predicate! symbol? 'symbol)
-(register-predicate! boolean? 'boolean)
+(p3-register-predicate! number? 'number)
+(p3-register-predicate! symbol? 'symbol)
+(p3-register-predicate! boolean? 'boolean)

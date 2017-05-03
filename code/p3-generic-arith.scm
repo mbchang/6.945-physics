@@ -1,12 +1,12 @@
 ;;;; Generic arithmetic
 
 (define (make-generic-arithmetic dispatcher)
-  (make-arithmetic 'generic any-object? '() ; the predict for this arithmetic is any-object, which will be the base predicate if we want to extend on generic-arithmetic
+  (make-arithmetic 'generic p3-any-object? '() ; the predict for this arithmetic is any-object, which will be the base predicate if we want to extend on generic-arithmetic
     (lambda (name)
-      (constant-union name))
+      (p3-constant-union name))
     (lambda (operator)
-      (simple-operation operator
-                        any-object?
+      (p3-simple-operation operator
+                        p3-any-object?
                         (make-generic-procedure
                           operator
                           (operator-arity operator)
@@ -24,22 +24,22 @@
                                          generic-arithmetic))
            (element (find-arithmetic-constant name arithmetic)))
        (set-cdr! binding
-                 (constant-union name
+                 (p3-constant-union name
                                  (cdr binding)
                                  element))))
    (arithmetic-constant-names generic-arithmetic))
   (for-each
    (lambda (operator)
      (let ((generic-procedure
-            (simple-operation-procedure
+            (p3-simple-operation-procedure
              (arithmetic-operation operator
                                    generic-arithmetic))))
        (for-each (lambda (operation)
                    (define-generic-procedure-handler
                        generic-procedure
-                       (operation-applicability operation)
-                       (operation-procedure operation)))
-                 (operation-components
+                       (p3-operation-applicability operation)
+                       (p3-operation-procedure operation)))
+                 (p3-operation-components
                   (arithmetic-operation operator arithmetic)))))
    (arithmetic-operators arithmetic)))
 
