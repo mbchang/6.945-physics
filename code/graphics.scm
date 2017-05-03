@@ -1,0 +1,22 @@
+(define graphics-device (make-graphics-device 'x))
+(define device-height)
+(define device-width)
+
+(define (reset-graphics)
+  (let* ((limits ((graphics-device-coordinate-limits graphics-device)
+                  (lambda x x)))
+         (height (+ (second limits) 1))
+         (width (+ (third limits) 1)))
+    (set! device-height height)
+    (set! device-width width)
+    (graphics-clear graphics-device)
+    (graphics-set-coordinate-limits graphics-device
+                                    (- (/ width 2))
+                                    (- (/ height 2))
+                                    (/ width 2)
+                                    (/ height 2))))
+
+(define (draw-line x1 y1 x2 y2)
+  (graphics-draw-line graphics-device x1 y1 x2 y2))
+(define (draw-circle x y radius)
+  (graphics-operation graphics-device 'fill-circle x y radius))
