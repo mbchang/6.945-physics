@@ -156,20 +156,17 @@
 (define (make-gravity thing all-things)
   (define (procedure thing influences)
     (sum (map (lambda (influence)
-                (let ((m1 (get-mass thing))
+                (let* ((m1 (get-mass thing))
                       (m2 (get-mass influence))
                       (G 6.674e-11)
-                      (r (magnitude (- (get-position thing)
-                                       (get-position influence))))
-                      ; get the unit vector  TODO TODO
-
+                      (v (- (get-position influence)  ; vector between influence and thing
+                                       (get-position thing)))
+                      (r (magnitude v)) ; distance between influence and thing
+                      (u (/ v r)) ; unit vector
+                      (gmag (* (* G m1 m2)  ; magnitude of gravity
+                              (/ 1 (square r))))
                     )
-                  (* (* G m1 m2)
-                     (/ 1 (square r)))
-
-
-                  ; then multiply the compoenents of the unit vector by the components of the force vector
-
+                  (* u gmag)  ; multiply unit vector by magnitude of gravitational force
                 ))
               influences)))
   (let ((influences (delq thing all-things)))
