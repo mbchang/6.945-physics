@@ -1,3 +1,5 @@
+(ge (make-top-level-environment))
+
 (load "load")
 
 (define (reset-repl)
@@ -7,7 +9,7 @@
 
 ;; TODO TODO TODO we should really change the arithmetic
 (define (sum values)
-  (reduce-left + #(0 0) values))
+  (reduce-left + 0 values))
 
 ;;; object type (parent type of everything)
 
@@ -36,7 +38,7 @@
   (make-property 'position))
 (define thing:velocity
   (make-property 'velocity
-                 'default-value #(0 0))) ; TODO: make general for dimensions
+                 'default-value 0)) ; TODO: make general for dimensions
 
 (define thing?
   (make-type 'thing (list thing:interactions
@@ -199,7 +201,7 @@
 
 #|
 (define w (make-world "world"))
-(define b (make-ball "ball1" 10 10 #(0 0)))
+(define b (make-ball "ball1" 10 10 #(1 1)))
 (add-ball! b w)
 (eq? b (car (get-world-all-things w)))
 (get-position b)
