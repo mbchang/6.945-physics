@@ -7,7 +7,6 @@
 
 (install-arithmetic! (extend-arithmetic vector-extender numeric-arithmetic))
 
-;; TODO TODO TODO we should really change the arithmetic
 (define (sum values)
   (reduce-left + 0 values))
 
@@ -38,7 +37,7 @@
   (make-property 'position))
 (define thing:velocity
   (make-property 'velocity
-                 'default-value 0)) ; TODO: make general for dimensions
+                 'default-value 0)) 
 
 (define thing?
   (make-type 'thing (list thing:interactions
