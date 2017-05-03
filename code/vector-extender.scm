@@ -1,6 +1,6 @@
 ;;;; vector arithmetic
 
-;; (register-predicate! vector? 'vector)
+ (register-predicate! vector? 'vector)
 
 (define (vector-element-wise element-procedure)
   (lambda vecs ; note: takes multiple vectors
@@ -61,18 +61,18 @@
       (lambda (operator element-operation)
         (let ((all (lambda (procedure)
                      (simple-operation operator vector? procedure)))
-              )
-              ;; (any (lambda (procedure)
-              ;;        (make-operation operator
-              ;;                        ;; (any-arg (operator-arity operator)
-              ;;                        ;;          vector?
-              ;;                        ;;          element?)
-              ;;                        procedure))))
+              
+               (any (lambda (procedure)
+                      (make-operation operator
+                                       (any-arg (operator-arity operator)
+                                                vector?
+                                                element?)
+                                      procedure))))
           (case operator
             ((+)         (all (vector-element-wise +)))
             ((-)         (all (vector-element-wise -)))
             ((negate)    (all (vector-element-wise negate)))
-            ;; ((*)         (any multiplication))
+             ((*)         (any multiplication))
             ((magnitude) (all magnitude))
             (else (all (lambda args
                          (error "Invalid vector operator:" operator))))))))))

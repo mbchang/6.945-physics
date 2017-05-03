@@ -3,7 +3,7 @@
 (define (reset-repl)
   (ge (make-top-level-environment)))
 
-(install-arithmetic! (extend-arithmetic vector-extender numeric-arithmetic))
+;(install-arithmetic! (extend-arithmetic vector-extender numeric-arithmetic))
 
 ;; TODO TODO TODO we should really change the arithmetic
 (define (sum values)
@@ -76,7 +76,7 @@
                                  (get-interaction-influences interaction)))
                               (get-interactions thing))))
          (mass (get-mass thing))
-         (a (/ net-force mass))
+         (a (* net-force (/ 1 mass)))
          (dv (* a dt))
          (v (+ (get-velocity thing) dv))
          (dx (* v dt))
@@ -159,9 +159,17 @@
                       (m2 (get-mass influence))
                       (G 6.674e-11)
                       (r (magnitude (- (get-position thing)
-                                       (get-position influence)))))
-                  (/ (* G m1 m2)
-                     (square r))))
+                                       (get-position influence))))
+                      ; get the unit vector 
+
+                    )
+                  (* (* G m1 m2)
+                     (/ 1 (square r)))
+
+
+                  ; then multiply the compoenents of the unit vector by the components of the force vector
+
+                ))
               influences)))
   (let ((influences (delq thing all-things)))
     (make-interaction gravity? 'gravity procedure influences)))
@@ -197,11 +205,16 @@
               (update-thing thing (get-world-timestep world)))
             (get-world-all-things world)))
 
-#|
+
 (define w (make-world "world"))
-(define b (make-ball "ball1" 10 10 #(0 0)))
-(add-ball! b w)
-(eq? b (car (get-world-all-things w)))
-(get-position b)
+(define b1 (make-ball "ball1" 10 10 #(0 0)))
+(define b2 (make-ball "ball2" 10 10 #(10 10)))
+(add-ball! b1 w)
+(add-ball! b2 w)
+;(eq? b (car (get-world-all-things w)))
+(get-position b1)
+(get-position b2)
 (update-world w)
-|#
+(get-position b1)
+(get-position b2)
+

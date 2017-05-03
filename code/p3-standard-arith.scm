@@ -18,19 +18,6 @@
                                  base-predicate)
                         (lambda args (cons operator args)))))))
 
-;(define (symbolic-extender base-arithmetic)
-;  (make-arithmetic 'symbolic symbolic? (list base-arithmetic)
-;    (lambda (name base-constant)
-;      (default-object))
-;    (let ((base-predicate
-;           (arithmetic-domain-predicate base-arithmetic)))
-;      (lambda (operator base-operation)
-;        (make-operation operator
-;                        (any-arg (operator-arity operator)
-;                                 symbolic?
-;                                 base-predicate)
-;                        (lambda args (cons operator args)))))))
-
 ;;;; Function arithmetic
 
 (define function? procedure?)
