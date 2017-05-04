@@ -112,11 +112,13 @@
   (for-each (lambda (thing)
               (let* ((no-gravity
                       (remove (lambda (interaction)
-                                (eq? (get-name interaction) 'gravity))
+                                (or (eq? (get-name interaction) 'gravity)
+                                    (eq? (get-name interaction) 'collision)))
                               (get-interactions thing)))
                      (gravity (make-gravity thing (get-world-all-things world)))
+                     (collision (make-collision thing (get-world-all-things world)))
                      (new-interactions
-                      (cons gravity no-gravity)))
+                      (cons collision (cons gravity no-gravity))))
                 (set-interactions! thing new-interactions)))
             (get-world-all-things world)))
 
@@ -172,6 +174,60 @@
   (let ((influences (delq thing all-things)))
     (make-interaction gravity? 'gravity procedure influences)))
 
+;;; collision interaction
+
+(define collision?
+  (make-type 'collision '()))
+(set-predicate<=! collision? interaction?)
+
+(define resolve-collision
+  (std-generic-procedure 'resolve-collision 2))
+
+(define-generic-procedure-handler resolve-collision
+  (match-args ball? ball?)
+  (lambda (a b)
+    (let* ((xa (get-position a))
+           (xb (get-position b))
+           (ua (get-velocity a))
+           (ub (get-velocity b))
+           (displacement (- xb xa))
+           (distance (magnitude displacement))
+           (ra (get-ball-radius a))
+           (rb (get-ball-radius b)))
+      (if (and (< (- distance
+                     ra rb)
+                  0)
+               )
+               ;; (> (magnitude (* ua ub)) 0))
+          (let* ((ma (get-mass a))
+                 (mb (get-mass b))
+                 (cr 1)
+                 (va (/ (+ (* ma ua)
+                           (* mb ub)
+                           (* mb cr (- ub ua)))
+                        (+ ma mb)))
+                 (dv (- va ua))
+                 (dt 1)) ; TODO: this is currently hardcoded!
+            ;; are they already moving apart?
+            (display "\n\n\n")
+            ;; (pp (magnitude (* (- va vb) dv)))
+            (pp (list ua va))
+            (/ (* -1 ma dv) dt))
+          (* xa 0)))))
+
+#| TESTING
+(define b1 (make-ball "b1" 10 1 #(0 0) #(0 0)))
+(define b2 (make-ball "b2" 10 1 #(10 0) #(-1 0)))
+|#
+
+(define (make-collision thing all-things)
+  (define (procedure thing influences)
+    (sum (map (lambda (influence)
+                (resolve-collision thing influence))
+              influences)))
+  (let ((influences (delq thing all-things)))
+    (make-interaction collision? 'collision procedure influences)))
+
 ;;; world type
 
 (define world:all-things
@@ -208,8 +264,8 @@
 
 (define (create-simple-world)
   (define w (make-world "world"))
-  (define b1 (make-ball "ball1" 30 1e15 #(-50 -50)))
-  (define b2 (make-ball "ball2" 30 1e15 #(50 50)))
+  (define b1 (make-ball "ball1" 30 1e13 #(-50 -50)))
+  (define b2 (make-ball "ball2" 30 1e13 #(50 50)))
   (add-ball! b1 w)
   (add-ball! b2 w)
   w
@@ -232,7 +288,7 @@
 )
 
 
-(run-engine (create-simple-world) 10)
+(run-engine (create-simple-world) 10000000000)
 
 
 
