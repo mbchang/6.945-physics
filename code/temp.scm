@@ -118,6 +118,30 @@
             (get-world-all-things world)))
 
 
+;(define (calculate-update-thing thing dt)
+;  (let* ((net-force (sum (map (lambda (interaction)
+;                                ((get-interaction-procedure interaction)
+;                                 thing
+;                                 (get-interaction-influences interaction)))
+;                              (get-interactions thing))))
+;         (mass (get-mass thing))
+;         (a (* net-force (/ 1 mass)))
+;         (dv (* a dt))
+;         (v (+ (get-velocity thing) dv))
+;         (dx (* v dt))
+;         (x (+ (get-position thing) dx)))
+;    (cons x v)))
+
+
+;(define (perform-update-thing thing update)
+;  (let ((x (car update))
+;        (v (cdr update)))
+;    (set-velocity! thing v)
+;    (set-position! thing x)))
+
+
+
+
 ;;; ball type
 
 (define ball:radius
@@ -132,7 +156,7 @@
 (define set-ball-radius!
   (property-setter ball:radius ball? any-object?))
 
-(define (make-ball name radius mass position velocity color)
+(define (make-ball name radius mass position velocity #!optional color)
   ((type-instantiator ball?)
    'name name
    'radius radius
@@ -193,7 +217,7 @@
 ;(define set-radius!
 ;  (property-setter magnet:radius magnet? any-object?))
 
-(define (make-magnet name charge mass position #!optional velocity)
+(define (make-magnet name charge mass position velocity #!optional color)
   ((type-instantiator magnet?)
    'name name
    'radius 10      ; predefined small radius (for drawing) since
@@ -201,7 +225,8 @@
    'charge charge
    'mass mass
    'position position
-   'velocity velocity))
+   'velocity velocity
+   'color color))
 
 (define (add-magnet! magnet world)
   (add-mass! magnet world) ; adds gravity
@@ -391,6 +416,17 @@
               (update-thing thing (get-world-timestep world)))
             (get-world-all-things world)))
 
+;(define (calculate-update-world world)
+;  (map (lambda (thing)
+;              (calculate-update-thing thing (get-world-timestep world)))
+;            (get-world-all-things world)))
+
+;(define (update-world world)
+;  (for-each (lambda (thing)
+;              (perform-update-thing thing (get-world-timestep world)))
+;            (calculate-update-world world)))
+
+
 #|
 
 (define w (make-world "world"))
@@ -422,6 +458,9 @@
 (get-position m2)
 |#
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Examples
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define (create-binary-stars)
   (define w (make-world "world"))
@@ -430,16 +469,12 @@
 
   (add-mass! b1 w)
   (add-mass! b2 w)
-  ;(define m1 (make-magnet "magnet1" 20 1 #(-30 -30)))
-  ;(define m2 (make-magnet "magnet2" 20 1 #(30 30)))
-  ;(add-magnet! m1 w)
-  ;(add-magnet! m2 w)
   w
 )
 
 (define (earth-moon)
   (define w (make-world "world"))
-  (define b1 (make-ball "earth" 30 1e15 #(0 0) #(0 0) "189CCA"))
+  (define b1 (make-ball "earth" 30 1e15 #(0 0) #(0 0) "blue"))
   (define b2 (make-ball "moon" 5 1e5 #(100 100) #(-15.361 15.361) "#85929E"))
 
   (add-mass! b1 w)
@@ -457,7 +492,6 @@
   (define b5 (make-ball "ball5" 5 1e5 #(140 140) #(-15.361 15.361) "orange"))
   (define b6 (make-ball "ball6" 5 1e5 #(150 150) #(-15.361 15.361) "gray"))
 
-
   (add-mass! s w)
   (add-mass! b1 w)
   (add-mass! b2 w)
@@ -468,6 +502,63 @@
   w
 )
 
+(define (magnets-1)
+  (define w (make-world "world"))
+  (define m1 (make-magnet "magnet1" 1e5 1 #(-30 -30) #(0 0) "red"))
+  (define m2 (make-magnet "magnet2" 1e5 1 #(30 30) #(0 0) "red"))
+
+  (add-magnet! m1 w)
+  (add-magnet! m2 w)
+  w
+)
+
+(define (magnets-2)
+  (define w (make-world "world"))
+  (define m1 (make-magnet "magnet1" 5e5 1 #(-100 -100) #(0 0) "red"))
+  (define m2 (make-magnet "magnet2" -5e5 1 #(100 100) #(0 0) "blue"))
+  (define m3 (make-magnet "magnet3" 5e5 1 #(-100 100) #(0 0) "red"))
+  (define m4 (make-magnet "magnet4" -5e5 1 #(100 -100) #(0 0) "blue"))
+
+  (add-magnet! m1 w)
+  (add-magnet! m2 w)
+  (add-magnet! m3 w)
+  (add-magnet! m4 w)
+  w
+)
+
+(define (magnetic-solar-system)
+  (define w (make-world "world"))
+  (define s (make-magnet "sun" 5e5 1e15 #(0 0) #(0 0) "blue"))
+  (define b1 (make-magnet "ball1" -2e7 1e5 #(100 100) #(-15.361 15.361) "red"))
+  (define b2 (make-magnet "ball2" -2e7 1e5 #(110 110) #(-15.361 15.361) "red"))
+  (define b3 (make-magnet "ball3" -2e7 1e5 #(120 120) #(-15.361 15.361) "red"))
+  (define b4 (make-magnet "ball4" -2e7 1e5 #(130 130) #(-15.361 15.361) "red"))
+  (define b5 (make-magnet "ball5" -2e7 1e5 #(140 140) #(-15.361 15.361) "red"))
+  (define b6 (make-magnet "ball6" -2e7 1e5 #(150 150) #(-15.361 15.361) "red"))
+
+  (add-magnet! s w)
+  (add-magnet! b1 w)
+  (add-magnet! b2 w)
+  (add-magnet! b3 w)
+  (add-magnet! b4 w)
+  (add-magnet! b5 w)
+  (add-magnet! b6 w)
+  w
+)
+
+(define (g-gravity)
+  (define w (make-world "world"))
+  (define b (make-ball "ball" 30 1 #(0 200) #(0 0) "black"))
+
+  (add-mass! b w)
+  (add-global-gravity! w)
+  w
+)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Running the engine
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define (run-engine world steps)
   (reset-graphics)
@@ -477,20 +568,23 @@
         (lambda (thing)
             (newline)
             (display (cons (get-name thing) (get-position thing)))
-            (render thing)
-        )
+            (render thing))
           (get-world-all-things world))
       (update-world world)
-      (run-engine world (- steps 1)))
-  )
-)
+      (run-engine world (- steps 1)))))
 
 ;(reset-graphics)
 
 ;(run-engine (earth-moon) 500)
 ;(run-engine (create-binary-stars) 500)
+;(run-engine (solar-system) 100)
+;(run-engine (magnets-1) 100)
+;(run-engine (magnets-2) 100)
+;(run-engine (magnetic-solar-system) 300)
+;(run-engine (g-gravity) 100)
 
 ;(run-engine (solar-system) 500)
-
 ;(run-engine (solar-system) 100)
+
 (graphics-close graphics-device)
+
