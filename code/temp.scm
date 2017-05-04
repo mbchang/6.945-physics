@@ -407,22 +407,22 @@
 (define set-world-timestep!
   (property-setter world:timestep world? any-object?))
 
-(define (update-world world)
-  (for-each (lambda (thing)
-              (update-thing thing (get-world-timestep world)))
-            (get-world-all-things world)))
+;(define (update-world world)
+;  (for-each (lambda (thing)
+;              (update-thing thing (get-world-timestep world)))
+;            (get-world-all-things world)))
 
 
 ; Not sure why doing it this way results in different results
-;(define (evaluate-update-world world)
-;  (map (lambda (thing)
-;              (evaluate-update-thing thing (get-world-timestep world)))
-;            (get-world-all-things world)))
+(define (evaluate-update-world world)
+  (map (lambda (thing)
+              (evaluate-update-thing thing (get-world-timestep world)))
+            (get-world-all-things world)))
 
-;(define (update-world world)
-;  (for-each (lambda (update)
-;              (apply-update-thing update))
-;            (evaluate-update-world world)))
+(define (update-world world)
+  (for-each (lambda (update)
+              (apply-update-thing update))
+            (evaluate-update-world world)))
 
 
 #|
@@ -566,7 +566,7 @@
         (lambda (thing)
             (newline)
             (display (cons (get-name thing) (get-position thing)))
-            ;(render thing)
+            (render thing)
           )
           (get-world-all-things world))
       (update-world world)
@@ -576,7 +576,7 @@
 
 ;(run-engine (earth-moon) 500)
 ;(run-engine (create-binary-stars) 500)
-(run-engine (solar-system) 10)
+(run-engine (solar-system) 100)
 ;(run-engine (magnets-1) 100)
 ;(run-engine (magnets-2) 100)
 ;(run-engine (magnetic-solar-system) 300)
