@@ -18,5 +18,17 @@
 
 (define (draw-line x1 y1 x2 y2)
   (graphics-draw-line graphics-device x1 y1 x2 y2))
-(define (draw-circle x y radius)
-  (graphics-operation graphics-device 'fill-circle x y radius))
+
+(define (draw-circle position radius)
+  (let ((x (vector-first position))
+        (y (vector-second position)))
+    (graphics-operation graphics-device 'fill-circle x y radius)))
+
+(define (render thing)
+  (cond ((ball? thing) (draw-circle (get-position thing) (get-ball-radius thing)))
+        (else 
+
+          ; TODO MAKE OTHER OBJECTS
+          (draw-circle (get-position thing) (get-ball-radius thing))
+        ))
+)

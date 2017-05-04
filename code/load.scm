@@ -79,6 +79,7 @@
             "functions"
           "operations"    
             "physics-substrate"
+            "graphics"
             ; "physics-objects"
             ; "physics-world"
           )
