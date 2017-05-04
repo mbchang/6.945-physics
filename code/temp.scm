@@ -102,26 +102,27 @@
     (set-position! thing x)))
 
 
-;(define (calculate-update-thing thing dt)
-;  (let* ((net-force (sum (map (lambda (interaction)
-;                                ((get-interaction-procedure interaction)
-;                                 thing
-;                                 (get-interaction-influences interaction)))
-;                              (get-interactions thing))))
-;         (mass (get-mass thing))
-;         (a (* net-force (/ 1 mass)))
-;         (dv (* a dt))
-;         (v (+ (get-velocity thing) dv))
-;         (dx (* v dt))
-;         (x (+ (get-position thing) dx)))
-;    (cons x v)))
+(define (evaluate-update-thing thing dt)
+  (let* ((net-force (sum (map (lambda (interaction)
+                                ((get-interaction-procedure interaction)
+                                 thing
+                                 (get-interaction-influences interaction)))
+                              (get-interactions thing))))
+         (mass (get-mass thing))
+         (a (* net-force (/ 1 mass)))
+         (dv (* a dt))
+         (v (+ (get-velocity thing) dv))
+         (dx (* v dt))
+         (x (+ (get-position thing) dx)))
+    (list thing x v)))
 
 
-;(define (perform-update-thing thing update)
-;  (let ((x (car update))
-;        (v (cdr update)))
-;    (set-velocity! thing v)
-;    (set-position! thing x)))
+(define (apply-update-thing update)
+  (let ((thing (first update))
+        (x (second update))
+        (v (third update)))
+    (set-velocity! thing v)
+    (set-position! thing x)))
 
 
 
@@ -371,15 +372,17 @@
               (update-thing thing (get-world-timestep world)))
             (get-world-all-things world)))
 
-;(define (calculate-update-world world)
+
+; Not sure why doing it this way results in different results
+;(define (evaluate-update-world world)
 ;  (map (lambda (thing)
-;              (calculate-update-thing thing (get-world-timestep world)))
+;              (evaluate-update-thing thing (get-world-timestep world)))
 ;            (get-world-all-things world)))
 
 ;(define (update-world world)
-;  (for-each (lambda (thing)
-;              (perform-update-thing thing (get-world-timestep world)))
-;            (calculate-update-world world)))
+;  (for-each (lambda (update)
+;              (apply-update-thing update))
+;            (evaluate-update-world world)))
 
 
 #|
@@ -523,7 +526,8 @@
         (lambda (thing)
             (newline)
             (display (cons (get-name thing) (get-position thing)))
-            (render thing))
+            ;(render thing)
+          )
           (get-world-all-things world))
       (update-world world)
       (run-engine world (- steps 1)))))
@@ -532,11 +536,10 @@
 
 ;(run-engine (earth-moon) 500)
 ;(run-engine (create-binary-stars) 500)
-;(run-engine (solar-system) 100)
+(run-engine (solar-system) 10)
 ;(run-engine (magnets-1) 100)
 ;(run-engine (magnets-2) 100)
 ;(run-engine (magnetic-solar-system) 300)
-(run-engine (g-gravity) 100)
+;(run-engine (g-gravity) 100)
 
 (graphics-close graphics-device)
-
