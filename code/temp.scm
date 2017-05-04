@@ -148,19 +148,22 @@
 
 (define magnet?
   (make-type 'magnet (list magnet:charge)))
-(set-predicate<=! magnet? thing?)
+(set-predicate<=! magnet? ball?)
 
 (define get-magnet-charge
   (property-getter magnet:charge magnet?))
 (define set-magnet-charge!
   (property-setter magnet:charge magnet? any-object?))
+;(define get-radius
+;  (property-getter magnet:radius magnet?))
+;(define set-radius!
+;  (property-setter magnet:radius magnet? any-object?))
 
 (define (make-magnet name charge mass position #!optional velocity)
   ((type-instantiator magnet?)
    'name name
-   'radius 0.01      ; predefined small radius (for drawing) since
-		     ; assuming point-like magnets; no getter/setter
-		     ; for magnet radius
+   'radius 10      ; predefined small radius (for drawing) since
+		     ; assuming point-like magnets
    'charge charge
    'mass mass
    'position position
@@ -245,18 +248,19 @@
   (define (procedure magnet influences)
     (sum (map (lambda (influence)
                 (let* ((q1 (get-magnet-charge magnet))
-                      (q2 (get-magnet-charge influence))
-                      (mu 1.256e-6)  ; permeability of air
-                      (v (- (get-position influence)  ; vector between influence and magnet
+		       (q2 (get-magnet-charge influence))
+		       (mu 1.256e-6)  ; permeability of air
+		       (v (- (get-position influence)  ; vector between influence and magnet
                                        (get-position magnet)))
-                      (r (magnitude v)) ; distance between influence and magnet
-		      (sgn (cond ((eq? (+ (sign q1) (sign q2)) 0) -1) ; if same charge, -1 (repel);
-				  (else 1))) ; opposite charge, 1 (attract)
-                      (u (* sgn (/ v r))) ; unit vector
-                      (mmag (* (* mu q1 q2)  ; magnitude of magnetic force
+		       (r (magnitude v)) ; distance between influence and magnet
+		       (u (* -1 (/ v r))) ; unit vector
+                                          ; -1 to account for opposite
+					  ; signs attract & same signs repel
+		       (mmag (* (* mu q1 q2)  ; magnitude of magnetic force
                               (/ 1 (* 4 pi (square r)))))
                     )
-                  (* u mmag)  ; multiply unit vector by magnitude of force
+                  (* u mmag)  ; multiply unit vector by magnitude of
+			      ; force
                 ))
               influences)))
   (let ((influences (delq magnet all-magnets)))
@@ -304,12 +308,12 @@
 
 #|
 (define w (make-world "world"))
-;(define b1 (make-ball "ball1" 10 1000000000000 #(0 0)))
+(define b1 (make-ball "ball1" 10 1 #(0 0)))
 ;(define b2 (make-ball "ball2" 10 1000000000000 #(10 10)))
-;(add-mass! b1 w)
+(add-mass! b1 w)
 ;(add-mass! b2 w)
-(define m1 (make-magnet "magnet1" -2 1000000000000 #(1 1) #(0 0)))
-(define m2 (make-magnet "magnet2" 2 1000000000000 #(10 10) #(0 0)))
+(define m1 (make-magnet "magnet1" 20 1 #(1 1) #(0 0)))
+(define m2 (make-magnet "magnet2" 20 1 #(10 10) #(0 0)))
 (add-magnet! m1 w)
 (add-magnet! m2 w)
 
@@ -317,7 +321,7 @@
 (get-interactions m1)
 ;(eq? b1 (car (get-world-all-things w)))
 
-;(get-position b1)
+(get-position b1)
 ;(get-position b2)
 (get-position m1)
 (get-position m2)
@@ -330,6 +334,7 @@
 (get-position m2)
 |#
 
+
 (define (create-binary-stars)
   (define w (make-world "world"))
   (define b1 (make-ball "ball1" 5 1e15 #(-100 -100) #(9 -9) "red"))
@@ -337,6 +342,10 @@
 
   (add-mass! b1 w)
   (add-mass! b2 w)
+  ;(define m1 (make-magnet "magnet1" 20 1 #(-30 -30)))
+  ;(define m2 (make-magnet "magnet2" 20 1 #(30 30)))
+  ;(add-magnet! m1 w)
+  ;(add-magnet! m2 w)
   w
 )
 
