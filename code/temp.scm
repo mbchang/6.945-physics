@@ -45,20 +45,25 @@
 (define thing:velocity
   (make-property 'velocity
                  'default-value 0)) 
+(define thing:color
+  (make-property 'color
+                 'default-value "black")) 
 
 (define thing?
   (make-type 'thing (list thing:interactions
                           thing:mass
                           thing:position
-                          thing:velocity)))
+                          thing:velocity
+                          thing:color)))
 (set-predicate<=! thing? object?)
 
-(define (make-thing name mass position #!optional velocity)
+(define (make-thing name mass position velocity color)
   ((type-instantiator thing?)
    'name name
    'mass mass
    'position position
-   'velocity velocity))
+   'velocity velocity
+   'color color))
 
 (define get-interactions
   (property-getter thing:interactions thing?))
@@ -76,6 +81,10 @@
   (property-getter thing:velocity thing?))
 (define set-velocity!
   (property-setter thing:velocity thing? any-object?))
+(define get-color
+  (property-getter thing:color thing?))
+(define set-color!
+  (property-setter thing:color thing? any-object?))
 
 (define (update-thing thing dt)
   (let* ((net-force (sum (map (lambda (interaction)
@@ -106,13 +115,14 @@
 (define set-ball-radius!
   (property-setter ball:radius ball? any-object?))
 
-(define (make-ball name radius mass position #!optional velocity)
+(define (make-ball name radius mass position velocity color)
   ((type-instantiator ball?)
    'name name
    'radius radius
    'mass mass
    'position position
-   'velocity velocity))
+   'velocity velocity
+   'color color))
 
 ; add any thing with mass (is affected by gravity)
 
@@ -263,7 +273,7 @@
                  'default-value '()))
 (define world:timestep
   (make-property 'timestep
-                 'default-value 1))
+                 'default-value 0.5))
 
 (define world?
   (make-type 'world (list world:all-things
@@ -298,8 +308,8 @@
 ;(define b2 (make-ball "ball2" 10 1000000000000 #(10 10)))
 ;(add-mass! b1 w)
 ;(add-mass! b2 w)
-(define m1 (make-magnet "magnet1" -2 1000000000000 #(1 1)))
-(define m2 (make-magnet "magnet2" 2 1000000000000 #(10 10)))
+(define m1 (make-magnet "magnet1" -2 1000000000000 #(1 1) #(0 0)))
+(define m2 (make-magnet "magnet2" 2 1000000000000 #(10 10) #(0 0)))
 (add-magnet! m1 w)
 (add-magnet! m2 w)
 
@@ -322,8 +332,9 @@
 
 (define (create-binary-stars)
   (define w (make-world "world"))
-  (define b1 (make-ball "ball1" 5 1e15 #(-100 -100) #(9 -9)))
-  (define b2 (make-ball "ball2" 5 1e15 #(100 100) #(-9 9)))
+  (define b1 (make-ball "ball1" 5 1e15 #(-100 -100) #(9 -9) "red"))
+  (define b2 (make-ball "ball2" 5 1e15 #(100 100) #(-9 9) "green"))
+
   (add-mass! b1 w)
   (add-mass! b2 w)
   w
@@ -331,8 +342,9 @@
 
 (define (earth-moon)
   (define w (make-world "world"))
-  (define b1 (make-ball "earth" 30 1e15 #(0 0)))
-  (define b2 (make-ball "moon" 5 1e5 #(100 100) #(-15.361 15.361)))
+  (define b1 (make-ball "earth" 30 1e15 #(0 0) #(0 0) "189CCA"))
+  (define b2 (make-ball "moon" 5 1e5 #(100 100) #(-15.361 15.361) "#85929E"))
+
   (add-mass! b1 w)
   (add-mass! b2 w)
   w
@@ -340,27 +352,35 @@
 
 (define (solar-system)
   (define w (make-world "world"))
-  (define s (make-ball "sun" 30 1e15 #(0 0)))
-  (define b1 (make-ball "ball1" 5 1e5 #(100 100) #(-15.361 15.361)))
-  (define b2 (make-ball "ball2" 5 1e5 #(125 125) #(-15.361 15.361)))
-  (define b3 (make-ball "ball3" 5 1e5 #(150 150) #(-15.361 15.361)))
+  (define s (make-ball "sun" 30 1e15 #(0 0) #(0 0) "yellow"))
+  (define b1 (make-ball "ball1" 5 1e5 #(100 100) #(-15.361 15.361) "blue"))
+  (define b2 (make-ball "ball2" 5 1e5 #(110 110) #(-15.361 15.361) "red"))
+  (define b3 (make-ball "ball3" 5 1e5 #(120 120) #(-15.361 15.361) "green"))
+  (define b4 (make-ball "ball4" 5 1e5 #(130 130) #(-15.361 15.361) "purple"))
+  (define b5 (make-ball "ball5" 5 1e5 #(140 140) #(-15.361 15.361) "orange"))
+  (define b6 (make-ball "ball6" 5 1e5 #(150 150) #(-15.361 15.361) "gray"))
+
 
   (add-mass! s w)
   (add-mass! b1 w)
   (add-mass! b2 w)
   (add-mass! b3 w)
+  (add-mass! b4 w)
+  (add-mass! b5 w)
+  (add-mass! b6 w)
   w
 )
 
 
 (define (run-engine world steps)
-  ;(reset-graphics)
+  (reset-graphics)
   (if (> steps 0)
     (begin 
       (for-each 
         (lambda (thing)
             (newline)
             (display (cons (get-name thing) (get-position thing)))
+            (graphics-operation graphics-device 'set-foreground-color (get-color thing))
             (render thing)
         )
           (get-world-all-things world))
@@ -369,11 +389,12 @@
   )
 )
 
-(reset-graphics)
+;(reset-graphics)
 
 ;(run-engine (earth-moon) 500)
 ;(run-engine (create-binary-stars) 500)
-(run-engine (solar-system) 500)
+(run-engine (solar-system) 100)
+(graphics-close graphics-device)
 
 
 
