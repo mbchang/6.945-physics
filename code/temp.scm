@@ -377,7 +377,7 @@
 (get-position m2)
 |#
 
-#|
+
 (define (create-binary-stars)
   (define w (make-world "world"))
   (define b1 (make-ball "ball1" 5 1e15 #(-100 -100) #(9 -9) "red"))
