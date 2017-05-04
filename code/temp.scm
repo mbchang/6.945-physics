@@ -115,7 +115,7 @@
 (define set-ball-radius!
   (property-setter ball:radius ball? any-object?))
 
-(define (make-ball name radius mass position velocity color)
+(define (make-ball name radius mass position velocity #!optional color)
   ((type-instantiator ball?)
    'name name
    'radius radius
@@ -159,7 +159,7 @@
 ;(define set-radius!
 ;  (property-setter magnet:radius magnet? any-object?))
 
-(define (make-magnet name charge mass position velocity color)
+(define (make-magnet name charge mass position velocity #!optional color)
   ((type-instantiator magnet?)
    'name name
    'radius 10      ; predefined small radius (for drawing) since
@@ -378,6 +378,9 @@
 (get-position m2)
 |#
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Examples
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define (create-binary-stars)
   (define w (make-world "world"))
@@ -464,8 +467,22 @@
   w
 )
 
+(define (g-gravity)
+  (define w (make-world "world"))
+  (define b (make-ball "ball" 30 1 #(0 200) #(0 0) "black"))
+
+  (add-mass! b w)
+  (add-global-gravity! w)
+  w
+)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Running the engine
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (define (run-engine world steps)
-  ;(reset-graphics)
+  (reset-graphics)
   (if (> steps 0)
     (begin 
       (for-each 
@@ -477,13 +494,15 @@
       (update-world world)
       (run-engine world (- steps 1)))))
 
-(reset-graphics)
+;(reset-graphics)
 
 ;(run-engine (earth-moon) 500)
 ;(run-engine (create-binary-stars) 500)
 ;(run-engine (solar-system) 100)
 ;(run-engine (magnets-1) 100)
 ;(run-engine (magnets-2) 100)
-(run-engine (magnetic-solar-system) 300)
+;(run-engine (magnetic-solar-system) 300)
+;(run-engine (g-gravity) 100)
+
 (graphics-close graphics-device)
 
