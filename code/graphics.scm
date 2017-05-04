@@ -14,7 +14,9 @@
                                     (- (/ width 2))
                                     (- (/ height 2))
                                     (/ width 2)
-                                    (/ height 2))))
+                                    (/ height 2)))
+
+)
 
 (define (draw-line x1 y1 x2 y2)
   (graphics-draw-line graphics-device x1 y1 x2 y2))
@@ -25,6 +27,7 @@
     (graphics-operation graphics-device 'fill-circle x y radius)))
 
 (define (render thing)
+  (graphics-operation graphics-device 'set-foreground-color (get-color thing))
   (cond ((ball? thing) (draw-circle (get-position thing) (get-ball-radius thing)))
         (else 
 
@@ -32,3 +35,8 @@
           (draw-circle (get-position thing) (get-ball-radius thing))
         ))
 )
+
+(define (random-color)
+  (let ((colors (list "blue" "red" "green"))
+        (r (random 3)))
+        (list-ref colors (random 3))))
