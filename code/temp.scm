@@ -292,7 +292,7 @@
               (update-thing thing (get-world-timestep world)))
             (get-world-all-things world)))
 
-
+#|
 (define w (make-world "world"))
 ;(define b1 (make-ball "ball1" 10 1000000000000 #(0 0)))
 ;(define b2 (make-ball "ball2" 10 1000000000000 #(10 10)))
@@ -318,4 +318,34 @@
 ;(get-position b2)
 (get-position m1)
 (get-position m2)
+|#
+
+(define (create-simple-world)
+  (define w (make-world "world"))
+  (define b1 (make-ball "ball1" 30 1e15 #(-50 -50)))
+  (define b2 (make-ball "ball2" 30 1e15 #(50 50)))
+  (add-mass! b1 w)
+  (add-mass! b2 w)
+  w
+)
+
+(define (run-engine world steps)
+  (reset-graphics)
+  (if (> steps 0)
+    (begin 
+      (for-each 
+        (lambda (thing)
+            (newline)
+            (display (cons (get-name thing) (get-position thing)))
+            (render thing)
+        )
+          (get-world-all-things world))
+      (update-world world)
+      (run-engine world (- steps 1)))
+  )
+)
+
+
+(run-engine (create-simple-world) 10)
+
 
