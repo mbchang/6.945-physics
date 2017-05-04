@@ -268,6 +268,46 @@
     (make-interaction magnetic-force? 'magnetic-force procedure influences)))
 
 
+;;; global force type (user input)
+
+(define global?
+  (make-type 'global '()))
+(set-predicate<=! global? interaction?)
+
+(define (make-global force)
+  (define (procedure thing influences)
+    ;(lambda ()
+      force);)
+  (make-interaction global? 'global procedure '()))
+
+(define (add-global! force world)
+  (for-each (lambda (thing)
+              (let* ((global (make-global force))
+                     (new-interactions
+                      (cons global (get-interactions thing))))
+                (set-interactions! thing new-interactions)))
+            (get-world-all-things world)))
+
+		 
+;;; global gravity
+
+(define global-gravity?
+  (make-type 'global-gravity '()))
+(set-predicate<=! global-gravity? global?)
+
+(define (make-global-gravity)
+  (define (procedure thing influences)
+    (* 9.807 (get-mass thing) #(0 -1)))
+  (make-interaction global-gravity? 'global-gravity procedure '()))
+
+(define (add-global-gravity! world)
+  (for-each (lambda (thing)
+              (let* ((global-gravity (make-global-gravity))
+                     (new-interactions
+                      (cons global-gravity (get-interactions thing))))
+                (set-interactions! thing new-interactions)))
+            (get-world-all-things world)))
+
 ;;; world type
 
 (define world:all-things
@@ -308,14 +348,17 @@
             (get-world-all-things world)))
 
 #|
+
 (define w (make-world "world"))
 (define b1 (make-ball "ball1" 10 1 #(0 0)))
 ;(define b2 (make-ball "ball2" 10 1000000000000 #(10 10)))
 (add-mass! b1 w)
 ;(add-mass! b2 w)
-(define m1 (make-magnet "magnet1" 20 1 #(1 1) #(0 0)))
-(define m2 (make-magnet "magnet2" 20 1 #(10 10) #(0 0)))
-(add-magnet! m1 w)
+
+(define m1 (make-magnet "magnet1" 20 1 #(1 1)))
+(define m2 (make-magnet "magnet2" 20 1 #(10 10)))
+(add-magnet! m1 w) 
+
 (add-magnet! m2 w)
 
 ;(get-interactions b1)
@@ -343,13 +386,6 @@
 
   (add-mass! b1 w)
   (add-mass! b2 w)
-
-  (define m1 (make-magnet "magnet1" 20 1 #(-30 -30)))
-  (define m2 (make-magnet "magnet2" 20 1 #(30 30)))
-  (add-magnet! m1 w)
-  (add-magnet! m2 w)
-
-
   w
 )
 
@@ -450,6 +486,4 @@
 ;(run-engine (magnets-2) 100)
 (run-engine (magnetic-solar-system) 300)
 (graphics-close graphics-device)
-
-
 
