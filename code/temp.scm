@@ -325,10 +325,10 @@
 |#
 
 
-(define (create-simple-world)
+(define (create-binary-stars)
   (define w (make-world "world"))
-  (define b1 (make-ball "ball1" 30 1e15 #(-50 -50)))
-  (define b2 (make-ball "ball2" 30 1e15 #(50 50)))
+  (define b1 (make-ball "ball1" 5 1e15 #(-100 -100) #(9 -9)))
+  (define b2 (make-ball "ball2" 5 1e15 #(100 100) #(-9 9)))
   (add-mass! b1 w)
   (add-mass! b2 w)
   ;(define m1 (make-magnet "magnet1" 20 1 #(-30 -30)))
@@ -338,8 +338,32 @@
   w
 )
 
+(define (earth-moon)
+  (define w (make-world "world"))
+  (define b1 (make-ball "earth" 30 1e15 #(0 0)))
+  (define b2 (make-ball "moon" 5 1e5 #(100 100) #(-15.361 15.361)))
+  (add-mass! b1 w)
+  (add-mass! b2 w)
+  w
+)
+
+(define (solar-system)
+  (define w (make-world "world"))
+  (define s (make-ball "sun" 30 1e15 #(0 0)))
+  (define b1 (make-ball "ball1" 5 1e5 #(100 100) #(-15.361 15.361)))
+  (define b2 (make-ball "ball2" 5 1e5 #(125 125) #(-15.361 15.361)))
+  (define b3 (make-ball "ball3" 5 1e5 #(150 150) #(-15.361 15.361)))
+
+  (add-mass! s w)
+  (add-mass! b1 w)
+  (add-mass! b2 w)
+  (add-mass! b3 w)
+  w
+)
+
+
 (define (run-engine world steps)
-  (reset-graphics)
+  ;(reset-graphics)
   (if (> steps 0)
     (begin 
       (for-each 
@@ -354,7 +378,11 @@
   )
 )
 
+(reset-graphics)
 
-(run-engine (create-simple-world) 10)
+;(run-engine (earth-moon) 500)
+;(run-engine (create-binary-stars) 500)
+(run-engine (solar-system) 500)
+
 
 
