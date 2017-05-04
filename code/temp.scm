@@ -101,6 +101,30 @@
     (set-velocity! thing v)
     (set-position! thing x)))
 
+
+;(define (calculate-update-thing thing dt)
+;  (let* ((net-force (sum (map (lambda (interaction)
+;                                ((get-interaction-procedure interaction)
+;                                 thing
+;                                 (get-interaction-influences interaction)))
+;                              (get-interactions thing))))
+;         (mass (get-mass thing))
+;         (a (* net-force (/ 1 mass)))
+;         (dv (* a dt))
+;         (v (+ (get-velocity thing) dv))
+;         (dx (* v dt))
+;         (x (+ (get-position thing) dx)))
+;    (cons x v)))
+
+
+;(define (update-thing thing update)
+;  (let ((x (car update))
+;        (v (cdr update)))
+;    (set-velocity! thing v)
+;    (set-position! thing x)))
+
+
+
 ;;; ball type
 
 (define ball:radius
@@ -411,7 +435,6 @@
   (define b4 (make-ball "ball4" 5 1e5 #(130 130) #(-15.361 15.361) "purple"))
   (define b5 (make-ball "ball5" 5 1e5 #(140 140) #(-15.361 15.361) "orange"))
   (define b6 (make-ball "ball6" 5 1e5 #(150 150) #(-15.361 15.361) "gray"))
-
 
   (add-mass! s w)
   (add-mass! b1 w)
