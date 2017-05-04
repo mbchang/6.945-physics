@@ -117,7 +117,7 @@
 ;    (cons x v)))
 
 
-;(define (update-thing thing update)
+;(define (perform-update-thing thing update)
 ;  (let ((x (car update))
 ;        (v (cdr update)))
 ;    (set-velocity! thing v)
@@ -370,6 +370,17 @@
   (for-each (lambda (thing)
               (update-thing thing (get-world-timestep world)))
             (get-world-all-things world)))
+
+;(define (calculate-update-world world)
+;  (map (lambda (thing)
+;              (calculate-update-thing thing (get-world-timestep world)))
+;            (get-world-all-things world)))
+
+;(define (update-world world)
+;  (for-each (lambda (thing)
+;              (perform-update-thing thing (get-world-timestep world)))
+;            (calculate-update-world world)))
+
 
 #|
 
