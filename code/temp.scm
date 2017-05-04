@@ -413,7 +413,6 @@
 ;            (get-world-all-things world)))
 
 
-; Not sure why doing it this way results in different results
 (define (evaluate-update-world world)
   (map (lambda (thing)
               (evaluate-update-thing thing (get-world-timestep world)))
