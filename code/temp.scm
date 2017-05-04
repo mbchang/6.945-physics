@@ -536,7 +536,7 @@
 ;(run-engine (magnets-1) 100)
 ;(run-engine (magnets-2) 100)
 ;(run-engine (magnetic-solar-system) 300)
-;(run-engine (g-gravity) 100)
+(run-engine (g-gravity) 100)
 
 (graphics-close graphics-device)
 
