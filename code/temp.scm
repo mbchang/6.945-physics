@@ -101,6 +101,23 @@
     (set-velocity! thing v)
     (set-position! thing x)))
 
+
+; add any thing with mass (is affected by gravity)
+
+(define (add-mass! mass world)
+  (set-world-all-things! world (cons mass (get-world-all-things world)))
+  (for-each (lambda (thing)
+              (let* ((no-gravity
+                      (remove (lambda (interaction)
+                                (eq? (get-name interaction) 'gravity))
+                              (get-interactions thing)))
+                     (gravity (make-gravity thing (get-world-all-things world)))
+                     (new-interactions
+                      (cons gravity no-gravity)))
+                (set-interactions! thing new-interactions)))
+            (get-world-all-things world)))
+
+
 ;;; ball type
 
 (define ball:radius
@@ -124,21 +141,38 @@
    'velocity velocity
    'color color))
 
-; add any thing with mass (is affected by gravity)
 
-(define (add-mass! mass world)
-  (set-world-all-things! world (cons mass (get-world-all-things world)))
-  (for-each (lambda (thing)
-              (let* ((no-gravity
-                      (remove (lambda (interaction)
-                                (eq? (get-name interaction) 'gravity))
-                              (get-interactions thing)))
-                     (gravity (make-gravity thing (get-world-all-things world)))
-                     (new-interactions
-                      (cons gravity no-gravity)))
-                (set-interactions! thing new-interactions)))
-            (get-world-all-things world)))
+;;; box type
 
+(define box:length
+  (make-property 'length))
+
+(define box:height
+  (make-property 'height))
+
+(define box?
+  (make-type 'box (list box:length
+			box:height)))
+(set-predicate<=! box? thing?)
+
+(define get-box-length
+  (property-getter box:length box?))
+(define set-box-length!
+  (property-setter box:length box? any-object?))
+(define get-box-height
+  (property-getter box:height box?))
+(define set-box-height!
+  (property-setter box:height box? any-object?))
+
+(define (make-box name length height mass position velocity color)
+  ((type-instantiator box?)
+   'name name
+   'length length
+   'height height
+   'mass mass
+   'position position
+   'velocity velocity
+   'color color))
 
 
 ;;; magnet type (for point-like magnets)
@@ -280,6 +314,7 @@
   (make-interaction global? 'global procedure '()))
 
 (define (add-global! force world)
+  ;(set-world-all-global-forces! world (cons (make-global force) (get-world-all-global-forces world)))
   (for-each (lambda (thing)
               (let* ((global (make-global force))
                      (new-interactions
@@ -287,6 +322,7 @@
                 (set-interactions! thing new-interactions)))
             (get-world-all-things world)))
 
+; TODO: how to "inform" things added later of global forces applied before
 		 
 ;;; global gravity
 
@@ -300,6 +336,7 @@
   (make-interaction global-gravity? 'global-gravity procedure '()))
 
 (define (add-global-gravity! world)
+  ;(set-world-all-global-forces! world (cons (make-global-gravity) (get-world-all-global-forces world)))
   (for-each (lambda (thing)
               (let* ((global-gravity (make-global-gravity))
                      (new-interactions
@@ -315,6 +352,9 @@
 (define world:all-magnets
   (make-property 'all-magnets
                  'default-value '()))
+(define world:all-global-forces
+  (make-property 'all-global-forces
+                 'default-value '()))
 (define world:timestep
   (make-property 'timestep
                  'default-value 0.5))
@@ -322,6 +362,7 @@
 (define world?
   (make-type 'world (list world:all-things
 			  world:all-magnets
+			  world:all-global-forces
                           world:timestep)))
 
 (define (make-world name)
@@ -336,6 +377,10 @@
   (property-getter world:all-magnets world?))
 (define set-world-all-magnets!
   (property-setter world:all-magnets world? any-object?))
+(define get-world-all-global-forces
+  (property-getter world:all-global-forces world?))
+(define set-world-all-global-forces!
+  (property-setter world:all-global-forces world? any-object?))
 (define get-world-timestep
   (property-getter world:timestep world?))
 (define set-world-timestep!
@@ -349,7 +394,7 @@
 #|
 
 (define w (make-world "world"))
-(define b1 (make-ball "ball1" 10 1 #(0 0)))
+(define b1 (make-ball "ball1" 5 1 #(100 100) #(-15.361 15.361) "blue"))
 ;(define b2 (make-ball "ball2" 10 1000000000000 #(10 10)))
 (add-mass! b1 w)
 ;(add-mass! b2 w)
@@ -360,8 +405,8 @@
 
 (add-magnet! m2 w)
 
-;(get-interactions b1)
-(get-interactions m1)
+(get-interactions b1)
+;(get-interactions m1)
 ;(eq? b1 (car (get-world-all-things w)))
 
 (get-position b1)
@@ -447,5 +492,5 @@
 
 ;(run-engine (solar-system) 500)
 
-(run-engine (solar-system) 100)
+;(run-engine (solar-system) 100)
 (graphics-close graphics-device)
