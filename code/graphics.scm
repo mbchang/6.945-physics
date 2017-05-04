@@ -27,6 +27,7 @@
     (graphics-operation graphics-device 'fill-circle x y radius)))
 
 (define (render thing)
+  (graphics-operation graphics-device 'set-foreground-color (get-color thing))
   (cond ((ball? thing) (draw-circle (get-position thing) (get-ball-radius thing)))
         (else 
 

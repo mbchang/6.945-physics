@@ -389,7 +389,6 @@
         (lambda (thing)
             (newline)
             (display (cons (get-name thing) (get-position thing)))
-            (graphics-operation graphics-device 'set-foreground-color (get-color thing))
             (render thing)
         )
           (get-world-all-things world))
