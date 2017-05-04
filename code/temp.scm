@@ -159,7 +159,7 @@
 ;(define set-radius!
 ;  (property-setter magnet:radius magnet? any-object?))
 
-(define (make-magnet name charge mass position #!optional velocity)
+(define (make-magnet name charge mass position velocity color)
   ((type-instantiator magnet?)
    'name name
    'radius 10      ; predefined small radius (for drawing) since
@@ -167,7 +167,8 @@
    'charge charge
    'mass mass
    'position position
-   'velocity velocity))
+   'velocity velocity
+   'color color))
 
 (define (add-magnet! magnet world)
   (add-mass! magnet world) ; adds gravity
@@ -342,16 +343,19 @@
 
   (add-mass! b1 w)
   (add-mass! b2 w)
-  ;(define m1 (make-magnet "magnet1" 20 1 #(-30 -30)))
-  ;(define m2 (make-magnet "magnet2" 20 1 #(30 30)))
-  ;(add-magnet! m1 w)
-  ;(add-magnet! m2 w)
+
+  (define m1 (make-magnet "magnet1" 20 1 #(-30 -30)))
+  (define m2 (make-magnet "magnet2" 20 1 #(30 30)))
+  (add-magnet! m1 w)
+  (add-magnet! m2 w)
+
+
   w
 )
 
 (define (earth-moon)
   (define w (make-world "world"))
-  (define b1 (make-ball "earth" 30 1e15 #(0 0) #(0 0) "189CCA"))
+  (define b1 (make-ball "earth" 30 1e15 #(0 0) #(0 0) "blue"))
   (define b2 (make-ball "moon" 5 1e5 #(100 100) #(-15.361 15.361) "#85929E"))
 
   (add-mass! b1 w)
@@ -380,28 +384,71 @@
   w
 )
 
+(define (magnets-1)
+  (define w (make-world "world"))
+  (define m1 (make-magnet "magnet1" 1e5 1 #(-30 -30) #(0 0) "red"))
+  (define m2 (make-magnet "magnet2" 1e5 1 #(30 30) #(0 0) "red"))
+
+  (add-magnet! m1 w)
+  (add-magnet! m2 w)
+  w
+)
+
+(define (magnets-2)
+  (define w (make-world "world"))
+  (define m1 (make-magnet "magnet1" 5e5 1 #(-100 -100) #(0 0) "red"))
+  (define m2 (make-magnet "magnet2" -5e5 1 #(100 100) #(0 0) "blue"))
+  (define m3 (make-magnet "magnet3" 5e5 1 #(-100 100) #(0 0) "red"))
+  (define m4 (make-magnet "magnet4" -5e5 1 #(100 -100) #(0 0) "blue"))
+
+  (add-magnet! m1 w)
+  (add-magnet! m2 w)
+  (add-magnet! m3 w)
+  (add-magnet! m4 w)
+  w
+)
+
+(define (magnetic-solar-system)
+  (define w (make-world "world"))
+  (define s (make-magnet "sun" 5e5 1e15 #(0 0) #(0 0) "blue"))
+  (define b1 (make-magnet "ball1" -2e7 1e5 #(100 100) #(-15.361 15.361) "red"))
+  (define b2 (make-magnet "ball2" -2e7 1e5 #(110 110) #(-15.361 15.361) "red"))
+  (define b3 (make-magnet "ball3" -2e7 1e5 #(120 120) #(-15.361 15.361) "red"))
+  (define b4 (make-magnet "ball4" -2e7 1e5 #(130 130) #(-15.361 15.361) "red"))
+  (define b5 (make-magnet "ball5" -2e7 1e5 #(140 140) #(-15.361 15.361) "red"))
+  (define b6 (make-magnet "ball6" -2e7 1e5 #(150 150) #(-15.361 15.361) "red"))
+
+  (add-magnet! s w)
+  (add-magnet! b1 w)
+  (add-magnet! b2 w)
+  (add-magnet! b3 w)
+  (add-magnet! b4 w)
+  (add-magnet! b5 w)
+  (add-magnet! b6 w)
+  w
+)
 
 (define (run-engine world steps)
-  (reset-graphics)
+  ;(reset-graphics)
   (if (> steps 0)
     (begin 
       (for-each 
         (lambda (thing)
             (newline)
             (display (cons (get-name thing) (get-position thing)))
-            (render thing)
-        )
+            (render thing))
           (get-world-all-things world))
       (update-world world)
-      (run-engine world (- steps 1)))
-  )
-)
+      (run-engine world (- steps 1)))))
 
-;(reset-graphics)
+(reset-graphics)
 
 ;(run-engine (earth-moon) 500)
 ;(run-engine (create-binary-stars) 500)
-(run-engine (solar-system) 100)
+;(run-engine (solar-system) 100)
+;(run-engine (magnets-1) 100)
+;(run-engine (magnets-2) 100)
+(run-engine (magnetic-solar-system) 300)
 (graphics-close graphics-device)
 
 
