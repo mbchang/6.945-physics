@@ -70,6 +70,25 @@ what we did, how we did it, why we did it
 
 (subject to change after restructuring)
 
+Our engine updates each object every timestep and re-renders them on the screen:
+\begin{verbatim}
+(define (run-engine world steps)
+  (reset-graphics)
+  (if (> steps 0)
+    (begin 
+      (for-each 
+        (lambda (thing)
+            (newline)
+            (display (cons (get-name thing) (get-position thing)))  ; for debugging
+            (render thing)
+          )
+          (get-world-all-things world))
+      (update-world world)
+      (run-engine world (- steps 1)))))
+\end{verbatim}
+
+where the \texttt{render} procedure takes in a \texttt{thing}, checks what type of thing it is, and renders the object appropriately.
+
 \section{Demos}
 \subsection{Gravity}
 % \begin{samepage}
