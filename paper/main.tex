@@ -25,12 +25,12 @@
 % \newcommand{\hmwkIssueDate}{22 February 2017}
 \newcommand{\hmwkDueDate}{8 May 2017}
 \newcommand{\hmwkClass}{6.905/6.945 Final Project Draft}
-\newcommand{\hmwkClassInstructor}{Professor Gerry Sussman}
+% \newcommand{\hmwkClassInstructor}{Professor Gerry Sussman}
 \newcommand{\hmwkAuthorName}{\textbf{Author1, Author2, Author3}}
 
 \title{
     \textmd{\hmwkClass:\ \hmwkTitle}\\
-    \\
+    \normalsize{\hmwkClassInstructor}\\
     % \small{Issued\ on\ \hmwkIssueDate}\\
     \small{Due\ on\ \hmwkDueDate}
 }
@@ -46,16 +46,23 @@ generic procedures, ps4 stuff
 what we did, how we did it, why we did it
 
 \section{Arithmetic}
-vector arithmetic
-what we did, how we did it, why we did it
+We incorporated the generic arithmetic developed in pset 3. We extended the vector-arithmetic to support element-wise operations between scalars and vectors. We did this by coercing scalars to become vectors that contain the same value. For example, \texttt{(+ \#(3 4) 1)} gets transformed into \texttt{(+ \#(3 4) #(1 1))}. The coercian method is 
+\begin{verbatim}
+(define (coerce a size-reference)
+  (if (vector? a)
+    a
+    (make-vector (vector-length size-reference) a)))
+\end{verbatim}
+The rest of the infrastructure for generic procedures was adapted from pset 4, but pset 4's generic arithmetic is not compatible with that of pset 3. To fix this issue, we first loaded the relevant pset 3 dependencies, installed a generic arithmetic with vector operations, redefined arithmetic operations to be the ones from that generic arithmetic (such as with \texttt{(define * (access * arith-environment))}), and then loaded the pset 4 generic procedure infrastructure on top.
 
 \section{Physics Engine}
 each object does its own updating, procedures are objects
 what we did, how we did it, why we did it
 
 \section{Demos}
+\subsection{Gravity}
+% \begin{samepage}
 We can easily extend our system with new forces and new objects. We begin by creating an gravity as an \texttt{interaction}:
-
 {\small\begin{verbatim}
 (define (make-gravity thing all-things)
   (define (procedure thing influences)
@@ -74,31 +81,46 @@ We can easily extend our system with new forces and new objects. We begin by cre
   (let ((influences (delq thing all-things)))
     (make-interaction gravity? 'gravity procedure influences)))
 \end{verbatim}}
+% \end{samepage}
 
-Below we've created several worlds that exhibit gravity (Fig. \ref{figure:gravity}). Once an object is added to the world, any object that has mass will feel gravitational forces with other object that have mass.
+\begin{figure}[h!]
+  \centering
+ \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{figs/gravity.png}
+  \caption{[\textit{left}] \texttt{earth-moon}; [\textit{center}] \texttt{binary-stars}; [\textit{right}] \texttt{solar-system}}
+  \label{figure:gravity}
+\end{figure}
 
+We've created several worlds that exhibit gravity (Fig. \ref{figure:gravity}). Once an object is added to the world, any object that has mass will feel gravitational forces with other object that have mass.
+
+% \begin{samepage}
 This world contains an earth with a moon orbiting around it.
 {\small\begin{verbatim}
 (define (earth-moon)
   (define w (make-world "world"))
   (define b1 (make-ball "earth" 30 1e15 #(0 0) #(0 0) "blue"))
   (define b2 (make-ball "moon" 5 1e5 #(100 100) #(-15.361 15.361) "#85929E"))
+
   (add-mass! b1 w)
   (add-mass! b2 w)
   w)
 \end{verbatim}}
+% \end{samepage}
 
+% \begin{samepage}
 This world contains two equal masses orbiting a common center of mass.
 {\small\begin{verbatim}
 (define (binary-stars)
   (define w (make-world "world"))
   (define b1 (make-ball "ball1" 5 1e15 #(-100 -100) #(9 -9) "red"))
   (define b2 (make-ball "ball2" 5 1e15 #(100 100) #(-9 9) "green"))
+
   (add-mass! b1 w)
   (add-mass! b2 w)
   w)
 \end{verbatim}}
+% \end{samepage}
 
+% \begin{samepage}
 This world contains a massive sun and several planets orbitting around the sun.
 {\small\begin{verbatim}
 (define (solar-system)
@@ -120,17 +142,12 @@ This world contains a massive sun and several planets orbitting around the sun.
   (add-mass! b6 w)
   w)
 \end{verbatim}}
+% \end{samepage}
 
-\begin{figure}[h!]
-  \centering
- \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{figs/gravity.png}
-  \caption{[\textit{left}] \texttt{earth-moon}; [\textit{center}] \texttt{binary-stars}; [\textit{right}] \texttt{solar-system}}
-  \label{figure:gravity}
-\end{figure}
-
+\subsection{Magentism}
+% \begin{samepage}
 Let's add magnetism into the physics engine. 
-
-\begin{verbatim}
+{\small\begin{verbatim}
 (define (make-magnetic-force magnet all-magnets)
   (define (procedure magnet influences)
     (sum (map (lambda (influence)
@@ -147,10 +164,12 @@ Let's add magnetism into the physics engine.
               influences)))
   (let ((influences (delq magnet all-magnets)))
     (make-interaction magnetic-force? 'magnetic-force procedure influences)))
-\end{verbatim}
+\end{verbatim}}
+% \end{samepage}
 
+% \begin{samepage}
 This is a simple world that two magnets repelling each other.
-\begin{verbatim}
+{\small\begin{verbatim}
 (define (magnets-1)
   (define w (make-world "world"))
   (define m1 (make-magnet "magnet1" 1e5 1 #(-30 -30) #(0 0) "red"))
@@ -158,12 +177,13 @@ This is a simple world that two magnets repelling each other.
 
   (add-magnet! m1 w)
   (add-magnet! m2 w)
-  w
-)
-\end{verbatim}
+  w)
+\end{verbatim}}
+% \end{samepage}
 
+% \begin{samepage}
 This world contains two positively charged masses (blue) and two negatively charged masses (red).
-\begin{verbatim}
+{\small\begin{verbatim}
 (define (magnets-2)
   (define w (make-world "world"))
   (define m1 (make-magnet "magnet1" 5e5 1 #(-100 -100) #(0 0) "red"))
@@ -175,13 +195,13 @@ This world contains two positively charged masses (blue) and two negatively char
   (add-magnet! m2 w)
   (add-magnet! m3 w)
   (add-magnet! m4 w)
-  w
-)
-\end{verbatim}
+  w)
+\end{verbatim}}
+% \end{samepage}
 
+% \begin{samepage}
 We can also combine gravity and magnetism together. Here, we created a solar-system-like world where each of the planets repel each other and the sun attracts the planets via gravity and magnetism. As figure \ref{figure:magnetism} (right) shows, this magnetic solar system exhibits wider and diverging orbits compared to figure \ref{figure:gravity} (right), the solar system with only gravity. 
-
-\begin{verbatim}
+{\small\begin{verbatim}
 (define (magnetic-solar-system)
   (define w (make-world "world"))
   (define s (make-magnet "sun" 5e5 1e15 #(0 0) #(0 0) "blue"))
@@ -199,9 +219,9 @@ We can also combine gravity and magnetism together. Here, we created a solar-sys
   (add-magnet! b4 w)
   (add-magnet! b5 w)
   (add-magnet! b6 w)
-  w
-)
-\end{verbatim}
+  w)
+\end{verbatim}}
+% \end{samepage}
 
 \begin{figure}[h!]
   \centering

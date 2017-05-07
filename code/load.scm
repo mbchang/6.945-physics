@@ -1,6 +1,6 @@
 (define arith-environment (make-top-level-environment))
-
 (load "load-arith" arith-environment)
+
 (define * (access * arith-environment))
 (define + (access + arith-environment))
 (define - (access - arith-environment))

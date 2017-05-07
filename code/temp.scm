@@ -568,12 +568,12 @@
 
 ;(reset-graphics)
 
-;(run-engine (earth-moon) 500)
+(run-engine (earth-moon) 500)
 ;(run-engine (binary-stars) 500)
-;(run-engine (solar-system) 100)
+;(run-engine (solar-system) 500)
 ;(run-engine (magnets-1) 100)
 ;(run-engine (magnets-2) 100)
-(run-engine (magnetic-solar-system) 300)
+;(run-engine (magnetic-solar-system) 300)
 ;(run-engine (g-gravity) 100)
 
 (graphics-close graphics-device)

@@ -12,9 +12,6 @@
           "predicate-counter"         ;from common
             "trie"                      ;from common
 
-
-
-
           "p3-predicate-metadata"        ;from common
           "p3-operations"                ;from common
           "arith"             ;from common
