@@ -69,11 +69,10 @@ Our engine updates each object every timestep and re-renders them on the screen:
         (lambda (thing)
             (newline)
             (display (cons (get-name thing) (get-position thing)))  ; for debugging
-            (render thing)
-          )
-          (get-world-all-things world))
+            (render thing))
+        (get-world-all-things world))
       (update-world world)
-      (run-engine world (- steps 1)))))
+    (run-engine world (- steps 1)))))
 \end{verbatim}
 
 where the \texttt{render} procedure takes in a \texttt{thing}, checks what type of thing it is, and renders the object appropriately.
