@@ -459,10 +459,10 @@
 ;; Examples
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define (create-binary-stars)
+(define (binary-stars)
   (define w (make-world "world"))
-  (define b1 (make-ball "ball1" 5 1e15 #(-100 -100) #(9 -9) "red"))
-  (define b2 (make-ball "ball2" 5 1e15 #(100 100) #(-9 9) "green"))
+  (define b1 (make-ball "ball1" 30 1e15 #(-90 -90) #(9 -9) "red"))
+  (define b2 (make-ball "ball2" 30 1e15 #(90 90) #(-9 9) "green"))
 
   (add-mass! b1 w)
   (add-mass! b2 w)
@@ -574,10 +574,10 @@
 ;(reset-graphics)
 
 ;(run-engine (earth-moon) 500)
-;(run-engine (create-binary-stars) 500)
+;(run-engine (binary-stars) 500)
 ;(run-engine (solar-system) 100)
 ;(run-engine (magnets-1) 100)
-(run-engine (magnets-2) 100)
+;(run-engine (magnets-2) 100)
 ;(run-engine (magnetic-solar-system) 300)
 ;(run-engine (g-gravity) 100)
 
