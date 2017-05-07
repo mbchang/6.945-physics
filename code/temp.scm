@@ -280,7 +280,7 @@
                       (m2 (get-mass influence))
                       (G 6.674e-11)
                       (v (- (get-position influence)  ; vector between influence and thing
-                                       (get-position thing)))
+                            (get-position thing)))
                       (r (magnitude v)) ; distance between influence and thing
                       (u (/ v r)) ; unit vector
                       (gmag (* (* G m1 m2)  ; magnitude of gravity
@@ -303,20 +303,15 @@
   (define (procedure magnet influences)
     (sum (map (lambda (influence)
                 (let* ((q1 (get-magnet-charge magnet))
-		       (q2 (get-magnet-charge influence))
-		       (mu 1.256e-6)  ; permeability of air
-		       (v (- (get-position influence)  ; vector between influence and magnet
-                                       (get-position magnet)))
-		       (r (magnitude v)) ; distance between influence and magnet
-		       (u (* -1 (/ v r))) ; unit vector
-                                          ; -1 to account for opposite
-					  ; signs attract & same signs repel
-		       (mmag (* (* mu q1 q2)  ; magnitude of magnetic force
-                              (/ 1 (* 4 pi (square r)))))
-                    )
-                  (* u mmag)  ; multiply unit vector by magnitude of
-			      ; force
-                ))
+            		       (q2 (get-magnet-charge influence))
+            		       (mu 1.256e-6)  ; permeability of air
+            		       (v (- (get-position influence)  ; vector between influence and magnet
+                             (get-position magnet)))
+            		       (r (magnitude v)) ; distance between influence and magnet
+            		       (u (* -1 (/ v r))) ; unit vector. -1 to account for oppositesigns attract & same signs repel
+            		       (mmag (* (* mu q1 q2)  ; magnitude of magnetic force
+                                (/ 1 (* 4 pi (square r))))))
+                  (* u mmag)))  ; multiply unit vector by magnitude of force
               influences)))
   (let ((influences (delq magnet all-magnets)))
     (make-interaction magnetic-force? 'magnetic-force procedure influences)))
@@ -578,7 +573,7 @@
 ;(run-engine (solar-system) 100)
 ;(run-engine (magnets-1) 100)
 ;(run-engine (magnets-2) 100)
-;(run-engine (magnetic-solar-system) 300)
+(run-engine (magnetic-solar-system) 300)
 ;(run-engine (g-gravity) 100)
 
 (graphics-close graphics-device)

@@ -56,30 +56,29 @@ what we did, how we did it, why we did it
 \section{Demos}
 We can easily extend our system with new forces and new objects. We begin by creating an gravity as an \texttt{interaction}:
 
-\begin{verbatim}
+{\small\begin{verbatim}
 (define (make-gravity thing all-things)
   (define (procedure thing influences)
     (sum (map (lambda (influence)
                 (let* ((m1 (get-mass thing))
-                      (m2 (get-mass influence))
-                      (G 6.674e-11)
-                      (v (- (get-position influence)
-                                       (get-position thing)))
-                      (r (magnitude v))
-                      (u (/ v r))
-                      (gmag (* (* G m1 m2)
-                              (/ 1 (square r))))
-                    )
-                  (* u gmag)
-                ))
+                       (m2 (get-mass influence))
+                       (G 6.674e-11)
+                       (v (- (get-position influence)  ; vector between influence and thing
+                            (get-position thing)))
+                       (r (magnitude v))               ; distance between influence and thing
+                       (u (/ v r))                     ; unit vector
+                       (gmag (* (* G m1 m2)            ; magnitude of gravity
+                                (/ 1 (square r)))))
+                  (* u gmag)))                        ; gravitational force vector
               influences)))
   (let ((influences (delq thing all-things)))
     (make-interaction gravity? 'gravity procedure influences)))
-\end{verbatim}
+\end{verbatim}}
 
-Below we've created several worlds that exhibit gravity. Once an object is added to the world, any object that has mass will feel gravitational forces with other object that have mass.
+Below we've created several worlds that exhibit gravity (Fig. \ref{figure:gravity}). Once an object is added to the world, any object that has mass will feel gravitational forces with other object that have mass.
 
-\begin{verbatim}
+This world contains an earth with a moon orbiting around it.
+{\small\begin{verbatim}
 (define (earth-moon)
   (define w (make-world "world"))
   (define b1 (make-ball "earth" 30 1e15 #(0 0) #(0 0) "blue"))
@@ -87,9 +86,10 @@ Below we've created several worlds that exhibit gravity. Once an object is added
   (add-mass! b1 w)
   (add-mass! b2 w)
   w)
-\end{verbatim}
+\end{verbatim}}
 
-\begin{verbatim}
+This world contains two equal masses orbiting a common center of mass.
+{\small\begin{verbatim}
 (define (binary-stars)
   (define w (make-world "world"))
   (define b1 (make-ball "ball1" 5 1e15 #(-100 -100) #(9 -9) "red"))
@@ -97,9 +97,10 @@ Below we've created several worlds that exhibit gravity. Once an object is added
   (add-mass! b1 w)
   (add-mass! b2 w)
   w)
-\end{verbatim}
+\end{verbatim}}
 
-\begin{verbatim}
+This world contains a massive sun and several planets orbitting around the sun.
+{\small\begin{verbatim}
 (define (solar-system)
   (define w (make-world "world"))
   (define s (make-ball "sun" 30 1e15 #(0 0) #(0 0) "yellow"))
@@ -117,19 +118,38 @@ Below we've created several worlds that exhibit gravity. Once an object is added
   (add-mass! b4 w)
   (add-mass! b5 w)
   (add-mass! b6 w)
-  w
-)
-\end{verbatim}
+  w)
+\end{verbatim}}
 
 \begin{figure}[h!]
   \centering
  \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{figs/gravity.png}
-  \caption{\textit{left}: \texttt{earth-moon}; \textit{center}: \texttt{binary-stars}; \textit{right}: \texttt{solar-system}}
+  \caption{[\textit{left}] \texttt{earth-moon}; [\textit{center}] \texttt{binary-stars}; [\textit{right}] \texttt{solar-system}}
   \label{figure:gravity}
 \end{figure}
 
+Let's add magnetism into the physics engine. 
 
+\begin{verbatim}
+(define (make-magnetic-force magnet all-magnets)
+  (define (procedure magnet influences)
+    (sum (map (lambda (influence)
+                (let* ((q1 (get-magnet-charge magnet))
+                           (q2 (get-magnet-charge influence))
+                           (mu 1.256e-6)  ; permeability of air
+                           (v (- (get-position influence)  ; vector between influence and magnet
+                             (get-position magnet)))
+                           (r (magnitude v))               ; distance between influence and magnet
+                           (u (* -1 (/ v r)))              ; unit vector
+                           (mmag (* (* mu q1 q2)           ; magnitude of magnetic force
+                                (/ 1 (* 4 pi (square r))))))
+                  (* u mmag)))                             ; magnetic force vector
+              influences)))
+  (let ((influences (delq magnet all-magnets)))
+    (make-interaction magnetic-force? 'magnetic-force procedure influences)))
+\end{verbatim}
 
+This is a simple world that two magnets repelling each other.
 \begin{verbatim}
 (define (magnets-1)
   (define w (make-world "world"))
@@ -142,6 +162,7 @@ Below we've created several worlds that exhibit gravity. Once an object is added
 )
 \end{verbatim}
 
+This world contains two positively charged masses (blue) and two negatively charged masses (red).
 \begin{verbatim}
 (define (magnets-2)
   (define w (make-world "world"))
@@ -157,6 +178,8 @@ Below we've created several worlds that exhibit gravity. Once an object is added
   w
 )
 \end{verbatim}
+
+We can also combine gravity and magnetism together. Here, we created a solar-system-like world where each of the planets repel each other and the sun attracts the planets via gravity and magnetism. As figure \ref{figure:magnetism} (right) shows, this magnetic solar system exhibits wider and diverging orbits compared to figure \ref{figure:gravity} (right), the solar system with only gravity. 
 
 \begin{verbatim}
 (define (magnetic-solar-system)
@@ -179,6 +202,13 @@ Below we've created several worlds that exhibit gravity. Once an object is added
   w
 )
 \end{verbatim}
+
+\begin{figure}[h!]
+  \centering
+ \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{figs/magnetism.png}
+  \caption{[\textit{left}] \texttt{magnets-1}; [\textit{center}] \texttt{magnets-2}; [\textit{right}] \texttt{magnetic-solar-system}}
+  \label{figure:magnetism}
+\end{figure}
 
 
 
