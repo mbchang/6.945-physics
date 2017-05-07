@@ -39,14 +39,18 @@
 \begin{document}
 \maketitle
 \section{Introduction}
-blah blah blah
+motivation: features of physics engine that incorporate ideas from class (e.g. generic operator, hierarchy, propagator, language for language (high--low)), cool visualization of concepts from class
 
 \section{Infrastructure}
 generic procedures, ps4 stuff
 what we did, how we did it, why we did it
 
 \section{Arithmetic}
-We incorporated the generic arithmetic developed in pset 3. We extended the vector-arithmetic to support element-wise operations between scalars and vectors. We did this by coercing scalars to become vectors that contain the same value. For example, \texttt{(+ \#(3 4) 1)} gets transformed into \texttt{(+ \#(3 4) #(1 1))}. The coercian method is 
+We incorporated the generic arithmetic developed in pset 3. We extended the vector-arithmetic to support element-wise operations between scalars and vectors. We did this by coercing scalars to become vectors that contain the same value. For example, \texttt{(+ \#(3 4) 1)} gets transformed into \texttt{(+ \#(3 4) \#(1 1))}. 
+
+This extension was made to allow our system to operate on any $n$th dimension vector, and therefore be applicable to any $n$th dimension world representation. The default velocity of an object is set to 0 if it is not specified. Supporting arithmetic operations between a scalar and a vector enables our system to use a single default value 0 that is compatible with any vector instead of limiting our system to the dimension of the default zero vector specified.  
+
+The coercion method is 
 \begin{verbatim}
 (define (coerce a size-reference)
   (if (vector? a)
@@ -56,8 +60,15 @@ We incorporated the generic arithmetic developed in pset 3. We extended the vect
 The rest of the infrastructure for generic procedures was adapted from pset 4, but pset 4's generic arithmetic is not compatible with that of pset 3. To fix this issue, we first loaded the relevant pset 3 dependencies, installed a generic arithmetic with vector operations, redefined arithmetic operations to be the ones from that generic arithmetic (such as with \texttt{(define * (access * arith-environment))}), and then loaded the pset 4 generic procedure infrastructure on top.
 
 \section{Physics Engine}
-each object does its own updating, procedures are objects
+There are mainly two ways we could update object positions: 1) The evolver can take in a list of forces and objects and apply forces as appropriate 2) Each object can be registered with a set of forces applicable to them and the evolver can call each object to evolve themselves.
+
+We chose the second model where each object does its own updating because [blank].
+
+There are three types of objects in the system: $thing$, $interaction$, and $world$. $thing$ refers to all physical objects in the system. There is a hierarchy of physical objects that have additional properties. For example, type $magnet$ has an additional property $charge$ and experiences magnetic forces while type $ball$ experiences only gravity. Each $thing$ keeps a list of $interactions$ that is used to update itself. $interaction$ refers to forces exerted on $thing$. $interaction$ includes a procedure that calculates the force as well as $influence$, a list of $thing$ that contribute to that force. Similar to $thing$, subtypes of $interaction$  form a hierarchy. Lastly, $world$ keeps a list of all $things$ and an $update$ call to the $world$ calls on each $thing$ to update itself.
+
 what we did, how we did it, why we did it
+
+(subject to change after restructuring)
 
 \section{Demos}
 \subsection{Gravity}
