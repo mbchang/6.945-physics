@@ -82,24 +82,8 @@ infrastructure on top.
 
 \section{Physics Engine}
 \subsection{Object Types}
-<<<<<<< HEAD
 
-There are three types of objects in the system: \texttt{thing},
-\texttt{interaction}, and \texttt{world}. \texttt{thing} refers to all physical
-objects in the system. There is a hierarchy of physical objects that have
-additional properties. For example, type \texttt{magnet} has an additional
-property \texttt{charge} and experiences magnetic forces while type
-\texttt{ball} experiences only gravity. Each \texttt{thing} keeps a list of
-\texttt{interaction} that is used to update itself. \texttt{interaction} refers
-to forces exerted on \texttt{thing}s. \texttt{interaction} includes a procedure
-that calculates the force as well as \texttt{influences}, a list of
-\texttt{thing}s that contribute to that force. Similar to \texttt{thing},
-subtypes of \texttt{interaction}s form a hierarchy. Lastly, \texttt{world}
-keeps a list of all \texttt{thing}s and an \texttt{update} call to the
-\texttt{world} calls on each \texttt{thing} to update itself.
-=======
 There are three types of objects in the system: \texttt{thing}, \texttt{interaction}, and \texttt{world}. \texttt{thing} refers to all physical objects in the system. There is a hierarchy of physical objects that have additional properties. For example, type \texttt{point-charge} has an additional property \texttt{charge} and experiences electric forces while type \texttt{ball} experiences only gravity. Each \texttt{thing} keeps a list of \texttt{interaction} that is used to update itself. \texttt{interaction} refers to forces exerted on \texttt{thing}s. \texttt{interaction} includes a procedure that calculates the force as well as \texttt{influences}, a list of \texttt{thing}s that contribute to that force. Similar to \texttt{thing}, subtypes of \texttt{interaction}s form a hierarchy. Lastly, \texttt{world} keeps a list of all \texttt{thing}s and an \texttt{update} call to the \texttt{world} calls on each \texttt{thing} to update itself.
->>>>>>> 3682cca8b1187cc131f35ca6accfd3ac0ff0e51e
 
 (subject to change after restructuring)
 
@@ -238,13 +222,9 @@ This world contains a massive sun and several planets orbitting around the sun.
 
 \subsection{Electromagentism}
 % \begin{samepage}
-<<<<<<< HEAD
 
-Let's add electromagnetism into the physics engine. 
-
-=======
 Let's add electric forces between point charges into the physics engine.
->>>>>>> 3682cca8b1187cc131f35ca6accfd3ac0ff0e51e
+
 {\small\begin{verbatim}
 (define (make-electric-force point-charge all-point-charges)
   (define (procedure point-charge influences)

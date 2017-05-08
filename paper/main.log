@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  8 MAY 2017 01:12
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  8 MAY 2017 07:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -511,60 +511,64 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-! Undefined control sequence.
-\@title ... }\\ \normalsize {\hmwkClassInstructor 
-                                                  }\\ \small {Due\ on\ \hmwk...
-l.40 \maketitle
-               
-? 
-
-! LaTeX Error: There's no line here to end.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.40 \maketitle
-               
-? 
 [1
 
 {/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 [2] <figs/gravity.png, id=15, 686.0832pt x 224.037pt>
 File: figs/gravity.png Graphic file (type png)
  <use figs/gravity.png>
-Package pdftex.def Info: figs/gravity.png used on input line 120.
+Package pdftex.def Info: figs/gravity.png used on input line 174.
 (pdftex.def)             Requested size: 469.76526pt x 153.39946pt.
 
-[3 <./figs/gravity.png>] [4] [5]
-<figs/magnetism.png, id=29, 690.4194pt x 224.037pt>
-File: figs/magnetism.png Graphic file (type png)
- <use figs/magnetism.png>
-Package pdftex.def Info: figs/magnetism.png used on input line 260.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[3] [4 <./figs/gravity.png>]
+Overfull \hbox (112.04234pt too wide) in paragraph at lines 245--248
+[]\OT1/cmr/m/n/10 ======= Let's add elec-tric forces be-tween point charges int
+o the physics en-gine. >>>>>>> 3682cca8b1187cc131f35ca6accfd3ac0ff0e51e 
+ []
+
+[5]
+
+LaTeX Warning: Reference `figure:charges' on page 6 undefined on input line 311
+.
+
+<figs/charges.png, id=29, 690.4194pt x 224.037pt>
+File: figs/charges.png Graphic file (type png)
+ <use figs/charges.png>
+Package pdftex.def Info: figs/charges.png used on input line 329.
 (pdftex.def)             Requested size: 469.7529pt x 152.432pt.
 
-[6 <./figs/magnetism.png>] (./main.aux) ) 
+[6 <./figs/charges.png>] [7] (./main.aux)
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+ ) 
 Here is how much of TeX's memory you used:
- 3588 strings out of 493089
- 51155 string characters out of 6134842
- 123859 words of memory out of 5000000
- 7009 multiletter control sequences out of 15000+600000
- 9695 words of font info for 36 fonts, out of 8000000 for 9000
+ 3590 strings out of 493089
+ 51163 string characters out of 6134842
+ 123853 words of memory out of 5000000
+ 7010 multiletter control sequences out of 15000+600000
+ 10003 words of font info for 37 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 38i,6n,23p,973b,283s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/local/texlive/2015/texmf-dist/fo
-nts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2015/texmf-dist/fon
-ts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2015/texmf-dist/font
-s/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2015/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2015/texmf-dist/fonts/ty
-pe1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1
-/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/
-public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/p
-ublic/amsfonts/cm/cmtt9.pfb>
-Output written on main.pdf (6 pages, 159190 bytes).
+ 38i,6n,23p,979b,285s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
+></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
+</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><
+/usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></u
+sr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr
+/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/lo
+cal/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/loc
+al/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/loca
+l/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb>
+Output written on main.pdf (7 pages, 170221 bytes).
 PDF statistics:
- 60 PDF objects out of 1000 (max. 8388607)
- 39 compressed objects within 1 object stream
+ 69 PDF objects out of 1000 (max. 8388607)
+ 46 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  11 words of extra memory for PDF output out of 10000 (max. 10000000)
 
