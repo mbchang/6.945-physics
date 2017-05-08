@@ -70,6 +70,8 @@ There are mainly two ways positions of physical objects could be updated: 1) The
 
 Our system adopted the second model where each object updates itself. This model makes it easier to handle different types of forces exerted on specific types of object. Moreover, in the second model, the engine does not need to be notified and updated everytime a new object is added. Instead, update or addition of new \texttt{interaction}s is taken care of at the object level when it is added.
 
+(TODO: add eval/apply code after restructuring)
+
 \subsection{Output Display}
 Our engine updates each object every timestep and re-renders them on the screen:
 \begin{verbatim}
@@ -261,6 +263,8 @@ We can also combine gravity and magnetism together. Here, we created a solar-sys
 \end{figure}
 
 
+\section{Extensibility of the System}
+Possible future extensions and high level explanation of how they would be implemented (through minimal change to current system)
 
 \end{document}
 
