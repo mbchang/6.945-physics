@@ -1,42 +1,35 @@
-(define graphics-device (make-graphics-device 'x))
-(define device-height)
-(define device-width)
+(define (make-graphics)
+  (make-graphics-device 'x))
 
-(define (reset-graphics)
-  (let* ((limits ((graphics-device-coordinate-limits graphics-device)
+(define (reset-graphics device)
+  (let* ((limits ((graphics-device-coordinate-limits device)
                   (lambda x x)))
          (height (+ (second limits) 1))
          (width (+ (third limits) 1)))
-    (set! device-height height)
-    (set! device-width width)
-    (graphics-clear graphics-device)
-    (graphics-set-coordinate-limits graphics-device
+    (graphics-clear device)
+    (graphics-set-coordinate-limits device
                                     (- (/ width 2))
                                     (- (/ height 2))
                                     (/ width 2)
-                                    (/ height 2)))
+                                    (/ height 2))))
 
-)
+(define (draw-line device x1 y1 x2 y2)
+  (graphics-draw-line device x1 y1 x2 y2))
 
-(define (draw-line x1 y1 x2 y2)
-  (graphics-draw-line graphics-device x1 y1 x2 y2))
-
-(define (draw-circle position radius)
+(define (draw-circle device position radius)
   (let ((x (vector-first position))
         (y (vector-second position)))
-    (graphics-operation graphics-device 'fill-circle x y radius)))
+    (graphics-operation device 'fill-circle x y radius)))
 
-(define (render thing)
-  (graphics-operation graphics-device 'set-foreground-color (get-color thing))
-  (cond ((ball? thing) (draw-circle (get-position thing) (get-ball-radius thing)))
-        (else 
-
-          ; TODO MAKE OTHER OBJECTS
-          (draw-circle (get-position thing) (get-ball-radius thing))
-        ))
-)
+(define (render device thing)
+  (graphics-operation device 'set-foreground-color (get-color thing))
+  (cond ((ball? thing)
+         (draw-circle device (get-position thing) (get-ball-radius thing)))
+        (else
+          ;; TODO MAKE OTHER OBJECTS
+          (draw-circle device (get-position thing) (get-ball-radius thing))
+          )))
 
 (define (random-color)
-  (let ((colors (list "blue" "red" "green"))
-        (r (random 3)))
-        (list-ref colors (random 3))))
+  (let ((colors (list "blue" "red" "green")))
+    (list-ref colors (random 3))))

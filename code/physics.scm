@@ -552,15 +552,17 @@
 ;; Running the engine
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(define device (make-graphics))
+
 (define (run-engine world steps)
-  (reset-graphics)
+  (reset-graphics device)
   (if (> steps 0)
     (begin 
       (for-each 
         (lambda (thing)
             (newline)
             (display (cons (get-name thing) (get-position thing)))
-            (render thing)
+            (render device thing)
           )
           (get-world-all-things world))
       (update-world world)
@@ -576,4 +578,4 @@
 ;(run-engine (magnetic-solar-system) 300)
 ;(run-engine (g-gravity) 100)
 
-(graphics-close graphics-device)
+(graphics-close device)
