@@ -1,5 +1,8 @@
 (define arith-environment (make-top-level-environment))
-(load "load-arith" arith-environment)
+
+(cd "ps03-generic-arith")
+(load "load" arith-environment)
+(cd "..")
 
 (define * (access * arith-environment))
 (define + (access + arith-environment))
@@ -56,31 +59,8 @@
 (define symbol? (access symbol? arith-environment))
 (define vector? (access vector? arith-environment))
 
-(load (list 
-            "utils"                     ;from common
-            "indexes"                   ;from common
-          "collections"               ;from common
-            "memoizers"                 ;from common
-            "predicates"                ;from common
-          "applicability"             ;from common
-            "generic-procedures"        ;from common
-            "pretty-printer"            ;from common
-          "operators"                 ;from common
-          "package"                   ;from common
-          "predicate-counter"         ;from common
-            "trie"                      ;from common
+(cd "ps04-object-system")
+(load "load")
+(cd "..")
 
-            "generics"
-            "tagging"
-          "predicates1"
-            "templates"
-            "values"
-            "tags"
-            "functions"
-          "operations"    
-            "physics-substrate"
-            "graphics"
-            ; "physics-objects"
-            ; "physics-world"
-          )
-)
+(load "graphics")

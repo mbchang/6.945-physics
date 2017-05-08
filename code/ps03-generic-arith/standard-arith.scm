@@ -31,11 +31,7 @@
                      (list codomain-arithmetic)
       (lambda (name codomain-constant)
         codomain-constant)
-      (lambda (operator codomain-operation) 
-        ; Note! in generic-arithmetic, you will loop over a bunch of operations and apply define-generic-procedure-handler to them
-        ; and here is where the operations get defined
-        ; so these operations operate with any-arg
-        ; a handler is built with each such operation
+      (lambda (operator codomain-operation)
         (make-operation operator
                         (any-arg (operator-arity operator)
                                  function?

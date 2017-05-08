@@ -1,4 +1,4 @@
-(ge (make-top-level-environment))
+; (ge (make-top-level-environment))
 
 (load "load")
 

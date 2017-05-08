@@ -20,7 +20,7 @@
   (let ((codomain-predicate
          (arithmetic-domain-predicate codomain-arithmetic)))
     (make-arithmetic 'function-with-coercion
-                     (disjoin codomain-predicate function?)z
+                     (disjoin codomain-predicate function?)
                      (list
                       (function-extender codomain-arithmetic))
       (lambda (name function-constant)

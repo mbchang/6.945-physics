@@ -1,7 +1,7 @@
 ;;;; Generic arithmetic
 
 (define (make-generic-arithmetic dispatcher)
-  (make-arithmetic 'generic any-object? '() ; the predict for this arithmetic is any-object, which will be the base predicate if we want to extend on generic-arithmetic
+  (make-arithmetic 'generic any-object? '()
     (lambda (name)
       (constant-union name))
     (lambda (operator)
@@ -45,4 +45,4 @@
 
 (define (extend-generic-arithmetic! generic-arithmetic extension)
   (add-to-generic-arithmetic! generic-arithmetic
-                              (extension generic-arithmetic)))  ;; you extend it over the entire arithmetic!
+                              (extension generic-arithmetic)))
