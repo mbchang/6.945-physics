@@ -60,16 +60,19 @@ The coercion method is
 The rest of the infrastructure for generic procedures was adapted from pset 4, but pset 4's generic arithmetic is not compatible with that of pset 3. To fix this issue, we first loaded the relevant pset 3 dependencies, installed a generic arithmetic with vector operations, redefined arithmetic operations to be the ones from that generic arithmetic (such as with \texttt{(define * (access * arith-environment))}), and then loaded the pset 4 generic procedure infrastructure on top.
 
 \section{Physics Engine}
-There are mainly two ways we could update object positions: 1) The evolver can take in a list of forces and objects and apply forces as appropriate 2) Each object can be registered with a set of forces applicable to them and the evolver can call each object to evolve themselves.
-
-We chose the second model where each object does its own updating because [blank].
-
-There are three types of objects in the system: $thing$, $interaction$, and $world$. $thing$ refers to all physical objects in the system. There is a hierarchy of physical objects that have additional properties. For example, type $magnet$ has an additional property $charge$ and experiences magnetic forces while type $ball$ experiences only gravity. Each $thing$ keeps a list of $interactions$ that is used to update itself. $interaction$ refers to forces exerted on $thing$. $interaction$ includes a procedure that calculates the force as well as $influence$, a list of $thing$ that contribute to that force. Similar to $thing$, subtypes of $interaction$  form a hierarchy. Lastly, $world$ keeps a list of all $things$ and an $update$ call to the $world$ calls on each $thing$ to update itself.
+\subsection{Object Types}
+There are three types of objects in the system: \texttt{thing}, \texttt{interaction}, and \texttt{world}. \texttt{thing} refers to all physical objects in the system. There is a hierarchy of physical objects that have additional properties. For example, type \texttt{magnet} has an additional property \texttt{charge} and experiences magnetic forces while type \texttt{ball} experiences only gravity. Each \texttt{thing} keeps a list of \texttt{interaction} that is used to update itself. \texttt{interaction} refers to forces exerted on \texttt{thing}s. \texttt{interaction} includes a procedure that calculates the force as well as \texttt{influences}, a list of \texttt{thing}s that contribute to that force. Similar to \texttt{thing}, subtypes of \texttt{interaction}s form a hierarchy. Lastly, \texttt{world} keeps a list of all \texttt{thing}s and an \texttt{update} call to the \texttt{world} calls on each \texttt{thing} to update itself.
 
 what we did, how we did it, why we did it
 
 (subject to change after restructuring)
 
+\subsection{Updating Physical Objects}
+There are mainly two ways we could update object positions: 1) The evolver can take in a list of forces and objects and apply forces as appropriate 2) Each object can be registered with a set of forces applicable to them and the evolver can call each object to evolve themselves.
+
+We chose the second model where each object does its own updating because [blank].
+
+\subsection{Output Display}
 Our engine updates each object every timestep and re-renders them on the screen:
 \begin{verbatim}
 (define (run-engine world steps)
