@@ -539,7 +539,7 @@
 ;(run-engine (solar-system) 500)
 ;(run-engine (charges-1) 100)
 ;(run-engine (charges-2) 100)
-;(run-engine (charged-solar-system) 300)
+;(run-engine (charged-solar-system) 500)
 ;(run-engine (g-gravity) 100)
 
 (graphics-close graphics-device)
