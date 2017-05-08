@@ -39,7 +39,10 @@
 \begin{document}
 \maketitle
 \section{Introduction}
-motivation: features of physics engine that incorporate ideas from class (e.g. generic operator, hierarchy, propagator, language for language (high--low)), cool visualization of concepts from class
+
+motivation: features of physics engine that incorporate ideas from class (e.g.
+generic operator, hierarchy, propagator, language for language (high--low)),
+cool visualization of concepts from class
 
 \section{Infrastructure}
 We used the object system from pset 4 to model physical objects in our simulated world, as well as the world itself. Having the ability to create a hierarchy of types allows us to derive new types of physical objects to be simulated from previously defined types (see section Object Types).
@@ -51,9 +54,20 @@ NOTE: feel like this should be merged with object types and arithmetic
 what we did, how we did it, why we did it
 
 \section{Arithmetic}
-We incorporated the generic arithmetic developed in pset 3. We extended the vector-arithmetic to support element-wise operations between scalars and vectors. We did this by coercing scalars to become vectors that contain the same value. For example, \texttt{(+ \#(3 4) 1)} gets transformed into \texttt{(+ \#(3 4) \#(1 1))}. 
 
-This extension was made to allow our system to operate on any $n$th dimension vector, and therefore be applicable to any $n$th dimension world representation. The default velocity of an object is set to 0 if it is not specified. Supporting arithmetic operations between a scalar and a vector enables our system to use a single default value 0 that is compatible with any vector instead of limiting our system to the dimension of the default zero vector specified.  
+We incorporated the generic arithmetic developed in pset 3. We extended the
+vector-arithmetic to support element-wise operations between scalars and
+vectors. We did this by coercing scalars to become vectors that contain the
+same value. For example, \texttt{(+ \#(3 4) 1)} gets transformed into
+\texttt{(+ \#(3 4) \#(1 1))}. 
+
+This extension was made to allow our system to operate on any $n$th dimension
+vector, and therefore be applicable to any $n$th dimension world
+representation. The default velocity of an object is set to 0 if it is not
+specified. Supporting arithmetic operations between a scalar and a vector
+enables our system to use a single default value 0 that is compatible with any
+vector instead of limiting our system to the dimension of the default zero
+vector specified.  
 
 The coercion method is 
 \begin{verbatim}
@@ -62,23 +76,43 @@ The coercion method is
     a
     (make-vector (vector-length size-reference) a)))
 \end{verbatim}
-The rest of the infrastructure for generic procedures was adapted from pset 4, but pset 4's generic arithmetic is not compatible with that of pset 3. To fix this issue, we first loaded the relevant pset 3 dependencies, installed a generic arithmetic with vector operations, redefined arithmetic operations to be the ones from that generic arithmetic (such as with \texttt{(define * (access * arith-environment))}), and then loaded the pset 4 generic procedure infrastructure on top.
+
+The rest of the infrastructure for generic procedures was adapted from pset 4,
+but pset 4's generic arithmetic is not compatible with that of pset 3. To fix
+this issue, we first loaded the relevant pset 3 dependencies, installed a
+generic arithmetic with vector operations, redefined arithmetic operations to
+be the ones from that generic arithmetic (such as with \texttt{(define *
+(access * arith-environment))}), and then loaded the pset 4 generic procedure
+infrastructure on top.
 
 \section{Physics Engine}
 \subsection{Object Types}
+
 There are three types of objects in the system: \texttt{thing}, \texttt{interaction}, and \texttt{world}. \texttt{thing} refers to all physical objects in the system. There is a hierarchy of physical objects that have additional properties. For example, type \texttt{point-charge} has an additional property \texttt{charge} and experiences electric forces while type \texttt{ball} experiences only gravity. Each \texttt{thing} keeps a list of \texttt{interaction} that is used to update itself. \texttt{interaction} refers to forces exerted on \texttt{thing}s. \texttt{interaction} includes a procedure that calculates the force as well as \texttt{influences}, a list of \texttt{thing}s that contribute to that force. Similar to \texttt{thing}, subtypes of \texttt{interaction}s form a hierarchy. Lastly, \texttt{world} keeps a list of all \texttt{thing}s and an \texttt{update} call to the \texttt{world} calls on each \texttt{thing} to update itself.
 
 (subject to change after restructuring)
 
 \subsection{Updating Physical Objects}
-There are mainly two ways positions of physical objects could be updated: 1) The evolver can take in a list of forces and objects and apply forces as appropriate 2) Each object can be registered with a set of forces applicable to it and the evolver can call each object to evolve itself.
 
-Our system adopted the second model where each object updates itself. This model makes it easier to handle different types of forces exerted on specific types of object. Moreover, in the second model, the engine does not need to be notified and updated everytime a new object is added. Instead, update or addition of new \texttt{interaction}s is taken care of at the object level when it is added.
+There are mainly two ways positions of physical objects could be updated: 1)
+The evolver can take in a list of forces and objects and apply forces as
+appropriate 2) Each object can be registered with a set of forces applicable to
+it and the evolver can call each object to evolve itself.
+
+Our system adopted the second model where each object updates itself. This
+model makes it easier to handle different types of forces exerted on specific
+types of object. Moreover, in the second model, the engine does not need to be
+notified and updated everytime a new object is added. Instead, update or
+addition of new \texttt{interaction}s is taken care of at the object level when
+it is added.
 
 (TODO: add eval/apply code after restructuring)
 
 \subsection{Output Display}
-Our engine updates each object every timestep and re-renders them on the screen:
+
+Our engine updates each object every timestep and re-renders them on the
+screen:
+
 \begin{verbatim}
 (define (run-engine world steps)
   (reset-graphics)
@@ -94,12 +128,16 @@ Our engine updates each object every timestep and re-renders them on the screen:
     (run-engine world (- steps 1)))))
 \end{verbatim}
 
-where the \texttt{render} procedure takes in a \texttt{thing}, checks what type of thing it is, and renders the object appropriately.
+where the \texttt{render} procedure takes in a \texttt{thing}, checks what type
+of thing it is, and renders the object appropriately.
 
 \section{Demos}
 \subsection{Gravity}
 % \begin{samepage}
-We can easily extend our system with new forces and new objects. We begin by creating an gravity as an \texttt{interaction}:
+
+We can easily extend our system with new forces and new objects. We begin by
+creating an gravity as an \texttt{interaction}:
+
 {\small\begin{verbatim}
 (define (make-gravity thing all-things)
   (define (procedure thing influences)
@@ -127,7 +165,9 @@ We can easily extend our system with new forces and new objects. We begin by cre
   \label{figure:gravity}
 \end{figure}
 
-We've created several worlds that exhibit gravity (Fig. \ref{figure:gravity}). Once an object is added to the world, any object that has mass will feel gravitational forces with other object that have mass.
+We've created several worlds that exhibit gravity (Fig. \ref{figure:gravity}).
+Once an object is added to the world, any object that has mass will feel
+gravitational forces with other object that have mass.
 
 % \begin{samepage}
 This world contains an earth with a moon orbiting around it.
@@ -144,7 +184,9 @@ This world contains an earth with a moon orbiting around it.
 % \end{samepage}
 
 % \begin{samepage}
+
 This world contains two equal masses orbiting a common center of mass.
+
 {\small\begin{verbatim}
 (define (binary-stars)
   (define w (make-world "world"))
@@ -158,7 +200,9 @@ This world contains two equal masses orbiting a common center of mass.
 % \end{samepage}
 
 % \begin{samepage}
+
 This world contains a massive sun and several planets orbitting around the sun.
+
 {\small\begin{verbatim}
 (define (solar-system)
   (define w (make-world "world"))
@@ -181,9 +225,11 @@ This world contains a massive sun and several planets orbitting around the sun.
 \end{verbatim}}
 % \end{samepage}
 
-\subsection{Magentism}
+\subsection{Electromagentism}
 % \begin{samepage}
+
 Let's add electric forces between point charges into the physics engine.
+
 {\small\begin{verbatim}
 (define (make-electric-force point-charge all-point-charges)
   (define (procedure point-charge influences)
@@ -209,7 +255,9 @@ Let's add electric forces between point charges into the physics engine.
 % \end{samepage}
 
 % \begin{samepage}
+
 This is a simple world with two point charges repelling each other.
+
 {\small\begin{verbatim}
 (define (charges-1)
   (define w (make-world "world"))
@@ -223,7 +271,10 @@ This is a simple world with two point charges repelling each other.
 % \end{samepage}
 
 % \begin{samepage}
-This world contains two positively charged masses (blue) and two negatively charged masses (red).
+
+This world contains two positively charged masses (blue) and two negatively
+charged masses (red).
+
 {\small\begin{verbatim}
 (define (charges-2)
   (define w (make-world "world"))
@@ -241,7 +292,9 @@ This world contains two positively charged masses (blue) and two negatively char
 % \end{samepage}
 
 % \begin{samepage}
+
 We can also combine gravity and electric charge. Here, we created a solar-system-like world where each of the planets repel each other and the sun attracts the planets via gravity and electric force. As figure \ref{figure:charges} (right) shows, this charged solar system exhibits wider and diverging orbits compared to figure \ref{figure:gravity} (right), the solar system with only gravity.
+
 {\small\begin{verbatim}
 (define (charged-solar-system)
   (define w (make-world "world"))
