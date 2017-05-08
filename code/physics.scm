@@ -84,7 +84,7 @@
                                  (get-interaction-influences interaction)))
                               (get-interactions thing))))
          (mass (get-mass thing))
-         (a (* net-force (/ 1 mass)))
+         (a (/ net-force mass))
          (dv (* a dt))
          (v (+ (get-velocity thing) dv))
          (dx (* v dt))
@@ -167,49 +167,55 @@
    'velocity velocity
    'color color))
 
-;;; magnet type (for point-like magnets)
+;;; point-charge type
 
-(define magnet:charge
+(define point-charge:charge
   (make-property 'charge))
 
-(define magnet?
-  (make-type 'magnet (list magnet:charge)))
-(set-predicate<=! magnet? ball?)
+(define point-charge?
+  (make-type 'point-charge (list point-charge:charge)))
+(set-predicate<=! point-charge? ball?)
 
-(define get-magnet-charge
-  (property-getter magnet:charge magnet?))
-(define set-magnet-charge!
-  (property-setter magnet:charge magnet? any-object?))
+(define get-point-charge-charge
+  (property-getter point-charge:charge point-charge?))
+(define set-point-charge-charge!
+  (property-setter point-charge:charge point-charge? any-object?))
 ;(define get-radius
-;  (property-getter magnet:radius magnet?))
+;  (property-getter point-charge:radius point-charge?))
 ;(define set-radius!
-;  (property-setter magnet:radius magnet? any-object?))
+;  (property-setter point-charge:radius point-charge? any-object?))
 
-(define (make-magnet name charge mass position velocity #!optional color)
-  ((type-instantiator magnet?)
+(define (make-point-charge name charge mass position velocity #!optional color)
+  ((type-instantiator point-charge?)
    'name name
    'radius 10      ; predefined small radius (for drawing) since
-                   ; assuming point-like magnets
+                   ; assuming point charges
    'charge charge
    'mass mass
    'position position
    'velocity velocity
    'color color))
 
-(define (add-magnet! magnet world)
-  (add-mass! magnet world) ; adds gravity
-  ;(set-world-all-things! world (cons magnet (get-world-all-things world)))
-  (set-world-all-magnets! world (cons magnet (get-world-all-magnets world)))
-  (for-each (lambda (magnet)
-              (let* ((no-magnetic
+(define (add-point-charge! point-charge world)
+  (add-mass! point-charge world) ; adds gravity
+  ;; (set-world-all-things!
+  ;;  world
+  ;;  (cons point-charge (get-world-all-things world)))
+  (set-world-all-point-charges!
+   world
+   (cons point-charge (get-world-all-point-charges world)))
+  (for-each (lambda (point-charge)
+              (let* ((no-charges
                       (remove (lambda (interaction)
-                                (eq? (get-name interaction) 'magnetic-force))
-                              (get-interactions magnet)))
-                     (magnetic (make-magnetic-force magnet (get-world-all-magnets world)))
+                                (eq? (get-name interaction) 'electric-force))
+                              (get-interactions point-charge)))
+                     (electric (make-electric-force
+                                point-charge
+                                (get-world-all-point-charges world)))
                      (new-interactions
-                      (cons magnetic no-magnetic)))
-                (set-interactions! magnet new-interactions)))
-            (get-world-all-magnets world)))
+                      (cons electric no-charges)))
+                (set-interactions! point-charge new-interactions)))
+            (get-world-all-point-charges world)))
 
 ;;; interaction type
 
@@ -255,38 +261,40 @@
                              (get-position thing)))
                        (r (magnitude v)) ; distance between influence and thing
                        (u (/ v r)) ; unit vector
-                       (gmag (* (* G m1 m2) ; magnitude of gravity
-                                (/ 1 (square r)))))
+                       (gmag (/ (* G m1 m2) ; magnitude of gravity
+                                (square r))))
                   ;; multiply unit vector by magnitude of gravitational force
                   (* u gmag)))
               influences)))
   (let ((influences (delq thing all-things)))
     (make-interaction gravity? 'gravity procedure influences)))
 
-;;; magnetic-force type (for two point-like magnets)
+;;; electric-force type (for two point charges)
 
-(define magnetic-force?
-  (make-type 'magnetic-force '()))
-(set-predicate<=! magnetic-force? interaction?)
+(define electric-force?
+  (make-type 'electric-force '()))
+(set-predicate<=! electric-force? interaction?)
 
-(define (make-magnetic-force magnet all-magnets)
-  (define (procedure magnet influences)
+(define (make-electric-force point-charge all-point-charges)
+  (define (procedure point-charge influences)
     (sum (map (lambda (influence)
-                (let* ((q1 (get-magnet-charge magnet))
-            		       (q2 (get-magnet-charge influence))
-            		       (mu 1.256e-6) ; permeability of air
-                       ;; vector between influence and magnet
+                (let* ((q1 (get-point-charge-charge point-charge))
+            		       (q2 (get-point-charge-charge influence))
+            		       (epsilon0 8.854e-12) ; vacuum permittivity
+                       ;; vector between influence and point charge
             		       (v (- (get-position influence)
-                             (get-position magnet)))
-            		       (r (magnitude v)) ; distance between influence and magnet
-                       ;; unit vector * -1 to account for oppositesigns attract & same signs repel
+                             (get-position point-charge)))
+                       ;; distance between influence and point charge
+            		       (r (magnitude v))
+                       ;; unit vector * -1 to account for opposite signs
+                       ;; attract & same signs repel
             		       (u (* -1 (/ v r)))
-            		       (mmag (* (* mu q1 q2)  ; magnitude of magnetic force
-                                (/ 1 (* 4 pi (square r))))))
-                  (* u mmag))) ; multiply unit vector by magnitude of force
+            		       (melec (/ (* q1 q2)  ; magnitude of electric force
+                                 (* 4 pi epsilon0 (square r)))))
+                  (* u melec))) ; multiply unit vector by magnitude of force
               influences)))
-  (let ((influences (delq magnet all-magnets)))
-    (make-interaction magnetic-force? 'magnetic-force procedure influences)))
+  (let ((influences (delq point-charge all-point-charges)))
+    (make-interaction electric-force? 'electric-force procedure influences)))
 
 ;;; global force type (user input)
 
@@ -340,8 +348,8 @@
 (define world:all-things
   (make-property 'all-things
                  'default-value '()))
-(define world:all-magnets
-  (make-property 'all-magnets
+(define world:all-point-charges
+  (make-property 'all-point-charges
                  'default-value '()))
 (define world:all-global-forces
   (make-property 'all-global-forces
@@ -352,8 +360,8 @@
 
 (define world?
   (make-type 'world (list world:all-things
-			  world:all-magnets
-			  world:all-global-forces
+                          world:all-point-charges
+                          world:all-global-forces
                           world:timestep)))
 
 (define (make-world name)
@@ -364,10 +372,10 @@
   (property-getter world:all-things world?))
 (define set-world-all-things!
   (property-setter world:all-things world? any-object?))
-(define get-world-all-magnets
-  (property-getter world:all-magnets world?))
-(define set-world-all-magnets!
-  (property-setter world:all-magnets world? any-object?))
+(define get-world-all-point-charges
+  (property-getter world:all-point-charges world?))
+(define set-world-all-point-charges!
+  (property-setter world:all-point-charges world? any-object?))
 (define get-world-all-global-forces
   (property-getter world:all-global-forces world?))
 (define set-world-all-global-forces!
@@ -395,11 +403,11 @@
 (add-mass! b1 w)
 ;(add-mass! b2 w)
 
-(define m1 (make-magnet "magnet1" 20 1 #(1 1)))
-(define m2 (make-magnet "magnet2" 20 1 #(10 10)))
-(add-magnet! m1 w)
+(define m1 (make-point-charge "charge1" 20 1 #(1 1)))
+(define m2 (make-point-charge "charge2" 20 1 #(10 10)))
+(add-point-charge! m1 w)
 
-(add-magnet! m2 w)
+(add-point-charge! m2 w)
 
 (get-interactions b1)
 ;(get-interactions m1)
@@ -429,8 +437,7 @@
 
   (add-mass! b1 w)
   (add-mass! b2 w)
-  w
-)
+  w)
 
 (define (earth-moon)
   (define w (make-world "world"))
@@ -439,8 +446,7 @@
 
   (add-mass! b1 w)
   (add-mass! b2 w)
-  w
-)
+  w)
 
 (define (solar-system)
   (define w (make-world "world"))
@@ -459,52 +465,48 @@
   (add-mass! b4 w)
   (add-mass! b5 w)
   (add-mass! b6 w)
-  w
-)
+  w)
 
-(define (magnets-1)
+(define (charges-1)
   (define w (make-world "world"))
-  (define m1 (make-magnet "magnet1" 1e5 1 #(-30 -30) #(0 0) "red"))
-  (define m2 (make-magnet "magnet2" 1e5 1 #(30 30) #(0 0) "red"))
+  (define m1 (make-point-charge "charge1" 1e-3 1 #(-30 -30) #(0 0) "red"))
+  (define m2 (make-point-charge "charge2" 1e-3 1 #(30 30) #(0 0) "red"))
 
-  (add-magnet! m1 w)
-  (add-magnet! m2 w)
-  w
-)
+  (add-point-charge! m1 w)
+  (add-point-charge! m2 w)
+  w)
 
-(define (magnets-2)
+(define (charges-2)
   (define w (make-world "world"))
-  (define m1 (make-magnet "magnet1" 5e5 1 #(-100 -100) #(0 0) "red"))
-  (define m2 (make-magnet "magnet2" -5e5 1 #(100 100) #(0 0) "blue"))
-  (define m3 (make-magnet "magnet3" 5e5 1 #(-100 100) #(0 0) "red"))
-  (define m4 (make-magnet "magnet4" -5e5 1 #(100 -100) #(0 0) "blue"))
+  (define m1 (make-point-charge "charge1" 1e-3 1 #(-100 -100) #(0 0) "red"))
+  (define m2 (make-point-charge "charge2" -1e-3 1 #(100 100) #(0 0) "blue"))
+  (define m3 (make-point-charge "charge3" 1e-3 1 #(-100 100) #(0 0) "red"))
+  (define m4 (make-point-charge "charge4" -1e-3 1 #(100 -100) #(0 0) "blue"))
 
-  (add-magnet! m1 w)
-  (add-magnet! m2 w)
-  (add-magnet! m3 w)
-  (add-magnet! m4 w)
-  w
-)
+  (add-point-charge! m1 w)
+  (add-point-charge! m2 w)
+  (add-point-charge! m3 w)
+  (add-point-charge! m4 w)
+  w)
 
-(define (magnetic-solar-system)
+(define (charged-solar-system)
   (define w (make-world "world"))
-  (define s (make-magnet "sun" 5e5 1e15 #(0 0) #(0 0) "blue"))
-  (define b1 (make-magnet "ball1" -2e7 1e5 #(100 100) #(-15.361 15.361) "red"))
-  (define b2 (make-magnet "ball2" -2e7 1e5 #(110 110) #(-15.361 15.361) "red"))
-  (define b3 (make-magnet "ball3" -2e7 1e5 #(120 120) #(-15.361 15.361) "red"))
-  (define b4 (make-magnet "ball4" -2e7 1e5 #(130 130) #(-15.361 15.361) "red"))
-  (define b5 (make-magnet "ball5" -2e7 1e5 #(140 140) #(-15.361 15.361) "red"))
-  (define b6 (make-magnet "ball6" -2e7 1e5 #(150 150) #(-15.361 15.361) "red"))
+  (define s (make-point-charge "sun" 3e-3 1e15 #(0 0) #(0 0) "blue"))
+  (define b1 (make-point-charge "ball1" -1e-1 1e5 #(100 100) #(-15.361 15.361) "red"))
+  (define b2 (make-point-charge "ball2" -1e-1 1e5 #(110 110) #(-15.361 15.361) "red"))
+  (define b3 (make-point-charge "ball3" -1e-1 1e5 #(120 120) #(-15.361 15.361) "red"))
+  (define b4 (make-point-charge "ball4" -1e-1 1e5 #(130 130) #(-15.361 15.361) "red"))
+  (define b5 (make-point-charge "ball5" -1e-1 1e5 #(140 140) #(-15.361 15.361) "red"))
+  (define b6 (make-point-charge "ball6" -1e-1 1e5 #(150 150) #(-15.361 15.361) "red"))
 
-  (add-magnet! s w)
-  (add-magnet! b1 w)
-  (add-magnet! b2 w)
-  (add-magnet! b3 w)
-  (add-magnet! b4 w)
-  (add-magnet! b5 w)
-  (add-magnet! b6 w)
-  w
-)
+  (add-point-charge! s w)
+  (add-point-charge! b1 w)
+  (add-point-charge! b2 w)
+  (add-point-charge! b3 w)
+  (add-point-charge! b4 w)
+  (add-point-charge! b5 w)
+  (add-point-charge! b6 w)
+  w)
 
 (define (g-gravity)
   (define w (make-world "world"))
@@ -512,8 +514,7 @@
 
   (add-mass! b w)
   (add-global-gravity! w)
-  w
-)
+  w)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Running the engine
@@ -533,12 +534,12 @@
         (update-world world)
         (run-engine world (- steps 1)))))
 
-(run-engine (earth-moon) 500)
+;(run-engine (earth-moon) 500)
 ;(run-engine (binary-stars) 500)
 ;(run-engine (solar-system) 500)
-;(run-engine (magnets-1) 100)
-;(run-engine (magnets-2) 100)
-;(run-engine (magnetic-solar-system) 300)
+;(run-engine (charges-1) 100)
+;(run-engine (charges-2) 100)
+;(run-engine (charged-solar-system) 300)
 ;(run-engine (g-gravity) 100)
 
 (graphics-close graphics-device)

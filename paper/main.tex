@@ -30,7 +30,7 @@
 
 \title{
     \textmd{\hmwkClass:\ \hmwkTitle}\\
-    \normalsize{\hmwkClassInstructor}\\
+    % \normalsize{\hmwkClassInstructor}\\
     % \small{Issued\ on\ \hmwkIssueDate}\\
     \small{Due\ on\ \hmwkDueDate}
 }
@@ -61,7 +61,7 @@ The rest of the infrastructure for generic procedures was adapted from pset 4, b
 
 \section{Physics Engine}
 \subsection{Object Types}
-There are three types of objects in the system: \texttt{thing}, \texttt{interaction}, and \texttt{world}. \texttt{thing} refers to all physical objects in the system. There is a hierarchy of physical objects that have additional properties. For example, type \texttt{magnet} has an additional property \texttt{charge} and experiences magnetic forces while type \texttt{ball} experiences only gravity. Each \texttt{thing} keeps a list of \texttt{interaction} that is used to update itself. \texttt{interaction} refers to forces exerted on \texttt{thing}s. \texttt{interaction} includes a procedure that calculates the force as well as \texttt{influences}, a list of \texttt{thing}s that contribute to that force. Similar to \texttt{thing}, subtypes of \texttt{interaction}s form a hierarchy. Lastly, \texttt{world} keeps a list of all \texttt{thing}s and an \texttt{update} call to the \texttt{world} calls on each \texttt{thing} to update itself.
+There are three types of objects in the system: \texttt{thing}, \texttt{interaction}, and \texttt{world}. \texttt{thing} refers to all physical objects in the system. There is a hierarchy of physical objects that have additional properties. For example, type \texttt{point-charge} has an additional property \texttt{charge} and experiences electric forces while type \texttt{ball} experiences only gravity. Each \texttt{thing} keeps a list of \texttt{interaction} that is used to update itself. \texttt{interaction} refers to forces exerted on \texttt{thing}s. \texttt{interaction} includes a procedure that calculates the force as well as \texttt{influences}, a list of \texttt{thing}s that contribute to that force. Similar to \texttt{thing}, subtypes of \texttt{interaction}s form a hierarchy. Lastly, \texttt{world} keeps a list of all \texttt{thing}s and an \texttt{update} call to the \texttt{world} calls on each \texttt{thing} to update itself.
 
 (subject to change after restructuring)
 
@@ -178,37 +178,41 @@ This world contains a massive sun and several planets orbitting around the sun.
 
 \subsection{Magentism}
 % \begin{samepage}
-Let's add magnetism into the physics engine. 
+Let's add electric forces between point charges into the physics engine.
 {\small\begin{verbatim}
-(define (make-magnetic-force magnet all-magnets)
-  (define (procedure magnet influences)
+(define (make-electric-force point-charge all-point-charges)
+  (define (procedure point-charge influences)
     (sum (map (lambda (influence)
-                (let* ((q1 (get-magnet-charge magnet))
-                           (q2 (get-magnet-charge influence))
-                           (mu 1.256e-6)  ; permeability of air
-                           (v (- (get-position influence)  ; vector between influence and magnet
-                             (get-position magnet)))
-                           (r (magnitude v))               ; distance between influence and magnet
-                           (u (* -1 (/ v r)))              ; unit vector
-                           (mmag (* (* mu q1 q2)           ; magnitude of magnetic force
-                                (/ 1 (* 4 pi (square r))))))
-                  (* u mmag)))                             ; magnetic force vector
+                (let* ((q1 (get-point-charge-charge point-charge))
+            		       (q2 (get-point-charge-charge influence))
+            		       (epsilon0 8.854e-12) ; vacuum permittivity
+                       ;; vector between influence and point charge
+            		       (v (- (get-position influence)
+                             (get-position point-charge)))
+                       ;; distance between influence and point charge
+            		       (r (magnitude v))
+                       ;; unit vector * -1 to account for opposite signs
+                       ;; attract & same signs repel
+            		       (u (* -1 (/ v r)))
+            		       (melec (/ (* q1 q2)  ; magnitude of electric force
+                                 (* 4 pi epsilon0 (square r)))))
+                  (* u melec))) ; multiply unit vector by magnitude of force
               influences)))
-  (let ((influences (delq magnet all-magnets)))
-    (make-interaction magnetic-force? 'magnetic-force procedure influences)))
+  (let ((influences (delq point-charge all-point-charges)))
+    (make-interaction electric-force? 'electric-force procedure influences)))
 \end{verbatim}}
 % \end{samepage}
 
 % \begin{samepage}
-This is a simple world that two magnets repelling each other.
+This is a simple world with two point charges repelling each other.
 {\small\begin{verbatim}
-(define (magnets-1)
+(define (charges-1)
   (define w (make-world "world"))
-  (define m1 (make-magnet "magnet1" 1e5 1 #(-30 -30) #(0 0) "red"))
-  (define m2 (make-magnet "magnet2" 1e5 1 #(30 30) #(0 0) "red"))
+  (define m1 (make-point-charge "charge1" 1e-3 1 #(-30 -30) #(0 0) "red"))
+  (define m2 (make-point-charge "charge2" 1e-3 1 #(30 30) #(0 0) "red"))
 
-  (add-magnet! m1 w)
-  (add-magnet! m2 w)
+  (add-point-charge! m1 w)
+  (add-point-charge! m2 w)
   w)
 \end{verbatim}}
 % \end{samepage}
@@ -216,50 +220,42 @@ This is a simple world that two magnets repelling each other.
 % \begin{samepage}
 This world contains two positively charged masses (blue) and two negatively charged masses (red).
 {\small\begin{verbatim}
-(define (magnets-2)
+(define (charges-2)
   (define w (make-world "world"))
-  (define m1 (make-magnet "magnet1" 5e5 1 #(-100 -100) #(0 0) "red"))
-  (define m2 (make-magnet "magnet2" -5e5 1 #(100 100) #(0 0) "blue"))
-  (define m3 (make-magnet "magnet3" 5e5 1 #(-100 100) #(0 0) "red"))
-  (define m4 (make-magnet "magnet4" -5e5 1 #(100 -100) #(0 0) "blue"))
+  (define m1 (make-point-charge "charge1" 1e-3 1 #(-100 -100) #(0 0) "red"))
+  (define m2 (make-point-charge "charge2" -1e-3 1 #(100 100) #(0 0) "blue"))
+  (define m3 (make-point-charge "charge3" 1e-3 1 #(-100 100) #(0 0) "red"))
+  (define m4 (make-point-charge "charge4" -1e-3 1 #(100 -100) #(0 0) "blue"))
 
-  (add-magnet! m1 w)
-  (add-magnet! m2 w)
-  (add-magnet! m3 w)
-  (add-magnet! m4 w)
+  (add-point-charge! m1 w)
+  (add-point-charge! m2 w)
+  (add-point-charge! m3 w)
+  (add-point-charge! m4 w)
   w)
 \end{verbatim}}
 % \end{samepage}
 
 % \begin{samepage}
-We can also combine gravity and magnetism together. Here, we created a solar-system-like world where each of the planets repel each other and the sun attracts the planets via gravity and magnetism. As figure \ref{figure:magnetism} (right) shows, this magnetic solar system exhibits wider and diverging orbits compared to figure \ref{figure:gravity} (right), the solar system with only gravity. 
+We can also combine gravity and electric charge. Here, we created a solar-system-like world where each of the planets repel each other and the sun attracts the planets via gravity and electric force. As figure \ref{figure:charges} (right) shows, this charged solar system exhibits wider and diverging orbits compared to figure \ref{figure:gravity} (right), the solar system with only gravity.
 {\small\begin{verbatim}
-(define (magnetic-solar-system)
+(define (charged-solar-system)
   (define w (make-world "world"))
-  (define s (make-magnet "sun" 5e5 1e15 #(0 0) #(0 0) "blue"))
-  (define b1 (make-magnet "ball1" -2e7 1e5 #(100 100) #(-15.361 15.361) "red"))
-  (define b2 (make-magnet "ball2" -2e7 1e5 #(110 110) #(-15.361 15.361) "red"))
-  (define b3 (make-magnet "ball3" -2e7 1e5 #(120 120) #(-15.361 15.361) "red"))
-  (define b4 (make-magnet "ball4" -2e7 1e5 #(130 130) #(-15.361 15.361) "red"))
-  (define b5 (make-magnet "ball5" -2e7 1e5 #(140 140) #(-15.361 15.361) "red"))
-  (define b6 (make-magnet "ball6" -2e7 1e5 #(150 150) #(-15.361 15.361) "red"))
+  (define s (make-point-charge "sun" 3e-3 1e15 #(0 0) #(0 0) "blue"))
+  (define b1 (make-point-charge "ball1" -1e-1 1e5 #(100 100) #(-15.361 15.361) "red"))
+  (define b2 (make-point-charge "ball2" -1e-1 1e5 #(110 110) #(-15.361 15.361) "red"))
+  (define b3 (make-point-charge "ball3" -1e-1 1e5 #(120 120) #(-15.361 15.361) "red"))
+  (define b4 (make-point-charge "ball4" -1e-1 1e5 #(130 130) #(-15.361 15.361) "red"))
+  (define b5 (make-point-charge "ball5" -1e-1 1e5 #(140 140) #(-15.361 15.361) "red"))
+  (define b6 (make-point-charge "ball6" -1e-1 1e5 #(150 150) #(-15.361 15.361) "red"))
 
-  (add-magnet! s w)
-  (add-magnet! b1 w)
-  (add-magnet! b2 w)
-  (add-magnet! b3 w)
-  (add-magnet! b4 w)
-  (add-magnet! b5 w)
-  (add-magnet! b6 w)
-  w)
 \end{verbatim}}
 % \end{samepage}
 
 \begin{figure}[h!]
   \centering
- \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{figs/magnetism.png}
-  \caption{[\textit{left}] \texttt{magnets-1}; [\textit{center}] \texttt{magnets-2}; [\textit{right}] \texttt{magnetic-solar-system}}
-  \label{figure:magnetism}
+ \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{figs/charges.png}
+  \caption{[\textit{left}] \texttt{charges-1}; [\textit{center}] \texttt{charges-2}; [\textit{right}] \texttt{charged-solar-system}}
+  \label{figure:charges}
 \end{figure}
 
 
@@ -267,8 +263,3 @@ We can also combine gravity and magnetism together. Here, we created a solar-sys
 Possible future extensions and high level explanation of how they would be implemented (through minimal change to current system)
 
 \end{document}
-
-
-
-
-
