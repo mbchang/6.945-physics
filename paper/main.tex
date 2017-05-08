@@ -42,7 +42,12 @@
 motivation: features of physics engine that incorporate ideas from class (e.g. generic operator, hierarchy, propagator, language for language (high--low)), cool visualization of concepts from class
 
 \section{Infrastructure}
-generic procedures, ps4 stuff
+We used the object system from pset 4 to model physical objects in our simulated world, as well as the world itself. Having the ability to create a hierarchy of types allows us to derive new types of physical objects to be simulated from previously defined types (see section Object Types).
+
+internal NOTE: generic procedures--we haven't actually used them in the code yet!
+
+NOTE: feel like this should be merged with object types and arithmetic
+
 what we did, how we did it, why we did it
 
 \section{Arithmetic}
@@ -260,6 +265,6 @@ We can also combine gravity and electric charge. Here, we created a solar-system
 
 
 \section{Extensibility of the System}
-Possible future extensions and high level explanation of how they would be implemented (through minimal change to current system)
+Future extensions include collisions between objects, constraints such as joints, simulating objects in three dimensions, and being able to combine objects into larger systems of objects. Collisions and other kinds of constraints could be implemented by adding an interaction that produces forces that enforce these constraints. Objects could be simulated in three dimensions by defining three dimensional object types and using the generic arithmetic to operate on higher dimensional vectors. Objects could be combined into larger systems using procedures, if there is a way to link them together, for example by constraints.
 
 \end{document}
