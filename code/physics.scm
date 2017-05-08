@@ -1,11 +1,4 @@
-; (ge (make-top-level-environment))
-
 (load "load")
-
-;(define (reset-repl)
-;  (ge (make-top-level-environment)))
-
-;(install-arithmetic! (extend-arithmetic vector-extender numeric-arithmetic))
 
 (define pi (* 4 (atan 1 1)))
 
@@ -30,11 +23,9 @@
 (define set-name!
   (property-setter object:name object? string?))
 
-
 ;;; thing type (physical things in world)
 
 ;; every thing has these properties
-
 (define thing:interactions
   (make-property 'interactions
                  'default-value '()))
@@ -44,10 +35,10 @@
   (make-property 'position))
 (define thing:velocity
   (make-property 'velocity
-                 'default-value 0)) 
+                 'default-value 0))
 (define thing:color
   (make-property 'color
-                 'default-value "black")) 
+                 'default-value "black"))
 
 (define thing?
   (make-type 'thing (list thing:interactions
@@ -86,22 +77,6 @@
 (define set-color!
   (property-setter thing:color thing? any-object?))
 
-(define (update-thing thing dt)
-  (let* ((net-force (sum (map (lambda (interaction)
-                                ((get-interaction-procedure interaction)
-                                 thing
-                                 (get-interaction-influences interaction)))
-                              (get-interactions thing))))
-         (mass (get-mass thing))
-         (a (* net-force (/ 1 mass)))
-         (dv (* a dt))
-         (v (+ (get-velocity thing) dv))
-         (dx (* v dt))
-         (x (+ (get-position thing) dx)))
-    (set-velocity! thing v)
-    (set-position! thing x)))
-
-
 (define (evaluate-update-thing thing dt)
   (let* ((net-force (sum (map (lambda (interaction)
                                 ((get-interaction-procedure interaction)
@@ -122,7 +97,6 @@
         (v (third update)))
     (set-velocity! thing v)
     (set-position! thing x)))
-
 
 ; add any thing with mass (is affected by gravity)
 (define (add-mass! mass world)
@@ -161,7 +135,6 @@
    'velocity velocity
    'color color))
 
-
 ;;; box type
 
 (define box:length
@@ -194,7 +167,6 @@
    'velocity velocity
    'color color))
 
-
 ;;; magnet type (for point-like magnets)
 
 (define magnet:charge
@@ -217,7 +189,7 @@
   ((type-instantiator magnet?)
    'name name
    'radius 10      ; predefined small radius (for drawing) since
-		     ; assuming point-like magnets
+                   ; assuming point-like magnets
    'charge charge
    'mass mass
    'position position
@@ -238,7 +210,6 @@
                       (cons magnetic no-magnetic)))
                 (set-interactions! magnet new-interactions)))
             (get-world-all-magnets world)))
-
 
 ;;; interaction type
 
@@ -277,21 +248,20 @@
   (define (procedure thing influences)
     (sum (map (lambda (influence)
                 (let* ((m1 (get-mass thing))
-                      (m2 (get-mass influence))
-                      (G 6.674e-11)
-                      (v (- (get-position influence)  ; vector between influence and thing
-                            (get-position thing)))
-                      (r (magnitude v)) ; distance between influence and thing
-                      (u (/ v r)) ; unit vector
-                      (gmag (* (* G m1 m2)  ; magnitude of gravity
-                              (/ 1 (square r))))
-                    )
-                  (* u gmag)  ; multiply unit vector by magnitude of gravitational force
-                ))
+                       (m2 (get-mass influence))
+                       (G 6.674e-11)
+                       ;; vector between influence and thing
+                       (v (- (get-position influence)
+                             (get-position thing)))
+                       (r (magnitude v)) ; distance between influence and thing
+                       (u (/ v r)) ; unit vector
+                       (gmag (* (* G m1 m2) ; magnitude of gravity
+                                (/ 1 (square r)))))
+                  ;; multiply unit vector by magnitude of gravitational force
+                  (* u gmag)))
               influences)))
   (let ((influences (delq thing all-things)))
     (make-interaction gravity? 'gravity procedure influences)))
-
 
 ;;; magnetic-force type (for two point-like magnets)
 
@@ -304,18 +274,19 @@
     (sum (map (lambda (influence)
                 (let* ((q1 (get-magnet-charge magnet))
             		       (q2 (get-magnet-charge influence))
-            		       (mu 1.256e-6)  ; permeability of air
-            		       (v (- (get-position influence)  ; vector between influence and magnet
+            		       (mu 1.256e-6) ; permeability of air
+                       ;; vector between influence and magnet
+            		       (v (- (get-position influence)
                              (get-position magnet)))
             		       (r (magnitude v)) ; distance between influence and magnet
-            		       (u (* -1 (/ v r))) ; unit vector. -1 to account for oppositesigns attract & same signs repel
+                       ;; unit vector * -1 to account for oppositesigns attract & same signs repel
+            		       (u (* -1 (/ v r)))
             		       (mmag (* (* mu q1 q2)  ; magnitude of magnetic force
                                 (/ 1 (* 4 pi (square r))))))
-                  (* u mmag)))  ; multiply unit vector by magnitude of force
+                  (* u mmag))) ; multiply unit vector by magnitude of force
               influences)))
   (let ((influences (delq magnet all-magnets)))
     (make-interaction magnetic-force? 'magnetic-force procedure influences)))
-
 
 ;;; global force type (user input)
 
@@ -330,7 +301,9 @@
   (make-interaction global? 'global procedure '()))
 
 (define (add-global! force world)
-  ;(set-world-all-global-forces! world (cons (make-global force) (get-world-all-global-forces world)))
+  ;; (set-world-all-global-forces!
+  ;;  world
+  ;;  (cons (make-global force) (get-world-all-global-forces world)))
   (for-each (lambda (thing)
               (let* ((global (make-global force))
                      (new-interactions
@@ -339,7 +312,7 @@
             (get-world-all-things world)))
 
 ; TODO: how to "inform" things added later of global forces applied before
-		 
+
 ;;; global gravity
 
 (define global-gravity?
@@ -352,7 +325,9 @@
   (make-interaction global-gravity? 'global-gravity procedure '()))
 
 (define (add-global-gravity! world)
-  ;(set-world-all-global-forces! world (cons (make-global-gravity) (get-world-all-global-forces world)))
+  ;; (set-world-all-global-forces!
+  ;;  world
+  ;;  (cons (make-global-gravity) (get-world-all-global-forces world)))
   (for-each (lambda (thing)
               (let* ((global-gravity (make-global-gravity))
                      (new-interactions
@@ -402,12 +377,6 @@
 (define set-world-timestep!
   (property-setter world:timestep world? any-object?))
 
-;(define (update-world world)
-;  (for-each (lambda (thing)
-;              (update-thing thing (get-world-timestep world)))
-;            (get-world-all-things world)))
-
-
 (define (evaluate-update-world world)
   (map (lambda (thing)
               (evaluate-update-thing thing (get-world-timestep world)))
@@ -417,7 +386,6 @@
   (for-each (lambda (update)
               (apply-update-thing update))
             (evaluate-update-world world)))
-
 
 #|
 
@@ -429,7 +397,7 @@
 
 (define m1 (make-magnet "magnet1" 20 1 #(1 1)))
 (define m2 (make-magnet "magnet2" 20 1 #(10 10)))
-(add-magnet! m1 w) 
+(add-magnet! m1 w)
 
 (add-magnet! m2 w)
 
@@ -547,28 +515,23 @@
   w
 )
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Running the engine
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define device (make-graphics))
+(define graphics-device (make-graphics))
 
 (define (run-engine world steps)
-  (reset-graphics device)
+  (reset-graphics graphics-device)
   (if (> steps 0)
-    (begin 
-      (for-each 
-        (lambda (thing)
-            (newline)
-            (display (cons (get-name thing) (get-position thing)))
-            (render device thing)
-          )
-          (get-world-all-things world))
-      (update-world world)
-      (run-engine world (- steps 1)))))
-
-;(reset-graphics)
+      (begin
+        (for-each (lambda (thing)
+                    (newline)
+                    (display (cons (get-name thing) (get-position thing)))
+                    (render graphics-device thing))
+                  (get-world-all-things world))
+        (update-world world)
+        (run-engine world (- steps 1)))))
 
 (run-engine (earth-moon) 500)
 ;(run-engine (binary-stars) 500)
@@ -578,4 +541,4 @@
 ;(run-engine (magnetic-solar-system) 300)
 ;(run-engine (g-gravity) 100)
 
-(graphics-close device)
+(graphics-close graphics-device)
