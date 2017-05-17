@@ -26,7 +26,7 @@
 \newcommand{\hmwkDueDate}{8 May 2017}
 \newcommand{\hmwkClass}{6.905/6.945 Final Project Draft}
 % \newcommand{\hmwkClassInstructor}{Professor Gerry Sussman}
-\newcommand{\hmwkAuthorName}{\textbf{Author1, Author2, Author3}}
+\newcommand{\hmwkAuthorName}{\textbf{Michael Chang, Abigail Choe, Leon Shen}}
 
 \title{
     \textmd{\hmwkClass:\ \hmwkTitle}\\
@@ -38,15 +38,20 @@
 \date{}
 \begin{document}
 \maketitle
-\section{Introduction}
+% \section{Introduction}
 
-motivation: features of physics engine that incorporate ideas from class (e.g.
-generic operator, hierarchy, propagator, language for language (high--low)),
-cool visualization of concepts from class
+% motivation: features of physics engine that incorporate ideas from class (e.g.
+% generic operator, hierarchy, propagator, language for language (high--low)),
+% cool visualization of concepts from class
 
 \section{Infrastructure}
-generic procedures, ps4 stuff
-what we did, how we did it, why we did it
+We used the object system from pset 4 to model physical objects in our simulated world, as well as the world itself. Having the ability to create a hierarchy of types allows us to derive new types of physical objects to be simulated from previously defined types (see section Object Types).
+
+% internal NOTE: generic procedures--we haven't actually used them in the code yet!
+
+% NOTE: feel like this should be merged with object types and arithmetic
+
+% what we did, how we did it, why we did it
 
 \section{Arithmetic}
 
@@ -85,7 +90,7 @@ infrastructure on top.
 
 There are three types of objects in the system: \texttt{thing}, \texttt{interaction}, and \texttt{world}. \texttt{thing} refers to all physical objects in the system. There is a hierarchy of physical objects that have additional properties. For example, type \texttt{point-charge} has an additional property \texttt{charge} and experiences electric forces while type \texttt{ball} experiences only gravity. Each \texttt{thing} keeps a list of \texttt{interaction} that is used to update itself. \texttt{interaction} refers to forces exerted on \texttt{thing}s. \texttt{interaction} includes a procedure that calculates the force as well as \texttt{influences}, a list of \texttt{thing}s that contribute to that force. Similar to \texttt{thing}, subtypes of \texttt{interaction}s form a hierarchy. Lastly, \texttt{world} keeps a list of all \texttt{thing}s and an \texttt{update} call to the \texttt{world} calls on each \texttt{thing} to update itself.
 
-(subject to change after restructuring)
+% (subject to change after restructuring)
 
 \subsection{Updating Physical Objects}
 
@@ -101,7 +106,7 @@ notified and updated everytime a new object is added. Instead, update or
 addition of new \texttt{interaction}s is taken care of at the object level when
 it is added.
 
-(TODO: add eval/apply code after restructuring)
+% (TODO: add eval/apply code after restructuring)
 
 \subsection{Output Display}
 
@@ -313,8 +318,6 @@ We can also combine gravity and electric charge. Here, we created a solar-system
 
 
 \section{Extensibility of the System}
-
-Possible future extensions and high level explanation of how they would be
-implemented (through minimal change to current system)
+Future extensions include collisions between objects, constraints such as joints, simulating objects in three dimensions, and being able to combine objects into larger systems of objects. Collisions and other kinds of constraints could be implemented by adding an interaction that produces forces that enforce these constraints. Objects could be simulated in three dimensions by defining three dimensional object types and using the generic arithmetic to operate on higher dimensional vectors. Objects could be combined into larger systems using procedures, if there is a way to link them together, for example by constraints.
 
 \end{document}
