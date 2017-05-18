@@ -38,14 +38,35 @@
 \date{}
 \begin{document}
 \maketitle
-% \section{Introduction}
+\section{Introduction}
+
+Physics can be viewed as the programming language of the natural world. From
+quantum mechanics to Newtonian mechanics to relativistic mechanics, the
+theories at these different levels of explanation each describe their
+primitives, means of combination, and means of abstraction over objects,
+relations, and events. Physical particles, objects, and entities are data, and
+the laws that govern how they evolve over time are procedures that operate on
+this data.  
+
+Our project aims to explore this view by implementing a simple physics engine
+in scheme. We designed the physics engine to be generic and extensible. For
+example, it is very straightforward to define new worlds on the underlying
+substrate as well as to define new objects and forces within a given world.
+This paper presents the design of the infrastructure for the physics engine,
+describes how objects and forces can be easily defined and added on top of the
+infrastucture, and illustrate several demonstrations of the system on worlds
+with gravitational and electrostatic forces 
 
 % motivation: features of physics engine that incorporate ideas from class (e.g.
 % generic operator, hierarchy, propagator, language for language (high--low)),
 % cool visualization of concepts from class
 
 \section{Infrastructure}
-We used the object system from pset 4 to model physical objects in our simulated world, as well as the world itself. Having the ability to create a hierarchy of types allows us to derive new types of physical objects to be simulated from previously defined types (see section Object Types).
+
+We used the object system from pset 4 to model physical objects in our
+simulated world, as well as the world itself. Having the ability to create a
+hierarchy of types allows us to derive new types of physical objects to be
+simulated from previously defined types (see section Object Types).
 
 % internal NOTE: generic procedures--we haven't actually used them in the code yet!
 
