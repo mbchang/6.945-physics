@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  17 MAY 2017 19:46
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  17 MAY 2017 20:12
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -517,17 +517,24 @@ e
 [2] <figs/gravity.png, id=15, 686.0832pt x 224.037pt>
 File: figs/gravity.png Graphic file (type png)
  <use figs/gravity.png>
-Package pdftex.def Info: figs/gravity.png used on input line 163.
+Package pdftex.def Info: figs/gravity.png used on input line 184.
 (pdftex.def)             Requested size: 469.76526pt x 153.39946pt.
 
-[3 <./figs/gravity.png>] [4] [5]
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[3] [4 <./figs/gravity.png>] [5]
 <figs/charges.png, id=29, 690.4194pt x 224.037pt>
 File: figs/charges.png Graphic file (type png)
  <use figs/charges.png>
-Package pdftex.def Info: figs/charges.png used on input line 314.
+Package pdftex.def Info: figs/charges.png used on input line 335.
 (pdftex.def)             Requested size: 469.7529pt x 152.432pt.
 
-[6 <./figs/charges.png>] (./main.aux) ) 
+[6 <./figs/charges.png>] [7] (./main.aux)
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+ ) 
 Here is how much of TeX's memory you used:
  3587 strings out of 493089
  51117 string characters out of 6134842
@@ -535,20 +542,19 @@ Here is how much of TeX's memory you used:
  7008 multiletter control sequences out of 15000+600000
  9695 words of font info for 36 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 38i,6n,23p,979b,283s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/local/texlive/2015/texmf-dist/font
-s/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2015/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2015/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2015/texmf-dist/fonts/ty
-pe1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2015/texmf-dist/fonts/type
-1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/p
-ublic/amsfonts/cm/cmti10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/pu
-blic/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/pub
-lic/amsfonts/cm/cmtt9.pfb>
-Output written on main.pdf (6 pages, 160081 bytes).
+ 38i,6n,23p,979b,285s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
+></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb>
+</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></
+usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></us
+r/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/l
+ocal/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/lo
+cal/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/loc
+al/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb>
+Output written on main.pdf (7 pages, 161890 bytes).
 PDF statistics:
- 60 PDF objects out of 1000 (max. 8388607)
- 39 compressed objects within 1 object stream
+ 65 PDF objects out of 1000 (max. 8388607)
+ 43 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  11 words of extra memory for PDF output out of 10000 (max. 10000000)
 
