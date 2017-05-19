@@ -50,11 +50,16 @@ this data.
 Our project aims to explore this view by implementing a simple physics engine
 in scheme. We designed the physics engine to be generic and extensible. For
 example, it is very straightforward to define new worlds on the underlying
-substrate as well as to define new objects and forces within a given world.
-This paper presents the design of the infrastructure for the physics engine,
+substrate as well as to define new objects and forces within a given world. We
+attempt to impose as little constraint on the behavior of the objects as
+possible, by allowing them to control how they are updated over time.  This
+paper presents the design of the infrastructure for the physics engine,
 describes how objects and forces can be easily defined and added on top of the
 infrastucture, and illustrate several demonstrations of the system on worlds
 with gravitational and electrostatic forces.
+
+All code for this project can be viewed at
+\texttt{https://github.com/mbchang/6.945-physics}.
 
 % motivation: features of physics engine that incorporate ideas from class (e.g.
 % generic operator, hierarchy, propagator, language for language (high--low)),
@@ -137,7 +142,7 @@ it and the evolver can call each object to evolve itself.
 Our system adopted the second model where each object updates itself. This
 model makes it easier to handle different types of forces exerted on specific
 types of object. Moreover, in the second model, the engine does not need to be
-notified and updated everytime a new object is added. Instead, update or
+notified and updated every time a new object is added. Instead, update or
 addition of new \texttt{interaction}s is taken care of at the object level when
 it is added.
 
@@ -372,5 +377,9 @@ by defining three dimensional object types and using the generic arithmetic to
 operate on higher dimensional vectors. Objects could be combined into larger
 systems using procedures, if there is a way to link them together, for example
 by constraints.
+
+Seeing as objects can choose how to update themselves, objects which behave in
+exotic ways, not necessarily obeying any physical laws or principles, could be
+added and integrated with physical objects.
 
 \end{document}
